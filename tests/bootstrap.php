@@ -13,3 +13,4 @@ EOT
 }
 
 $loader->add('Geocoder\Tests', __DIR__);
+$loader->add('Geocoder\Tests', __DIR__ . '/../vendor/willdurand/geocoder/tests');

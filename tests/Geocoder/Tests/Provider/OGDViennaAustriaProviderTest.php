@@ -49,17 +49,17 @@ class OGDViennaAustriaProviderTest extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertEquals(48.208583576583, $result['latitude'], '', 0.0001);
         $this->assertEquals(16.373089928434, $result['longitude'], '', 0.0001);
-        $this->assertNull($result['bounds']);
-        //$this->assertNull($result['streetNumber']);
-        $this->assertNull($result['streetName']);
-        $this->assertNull($result['zipcode']);
-        $this->assertNull($result['city']);
-        //$this->assertNull($result['cityDistrict']);
-        $this->assertNull($result['region']);
-        $this->assertNull($result['regionCode']);
-        //$this->assertNull($result['country']);
-        $this->assertNull($result['countryCode']);
-        $this->assertNull($result['timezone']);
+        $this->assertArrayHasKey('south', $result['bounds']);
+        $this->assertArrayHasKey('north', $result['bounds']);
+        $this->assertArrayHasKey('east', $result['bounds']);
+        $this->assertArrayHasKey('west', $result['bounds']);
+        $this->assertEquals('Stephansplatz', $result['streetName']);
+        $this->assertEmpty($result['zipcode']);
+        $this->assertEquals('Vienna', $result['city']);
+        $this->assertEquals('Vienna', $result['region']);
+        $this->assertEquals('Vienna', $result['regionCode']);
+        $this->assertEquals('AT', $result['countryCode']);
+        $this->assertEquals('Europe/Vienna', $result['timezone']);
     }
 
     /**
