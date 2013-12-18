@@ -1,9 +1,15 @@
 Geocoder Extra
 ==============
 
+[![Build
+Status](https://travis-ci.org/geocoder-php/geocoder-extra.png?branch=master)](https://travis-ci.org/geocoder-php/geocoder-extra)
+[![Latest Stable
+Version](https://poser.pugx.org/geocoder-php/geocoder-extra/v/stable.png)](https://packagist.org/packages/geocoder-php/geocoder-extra)
+
 This repository hosts Geocoder extra features that do not belong to the core
 but can be nonetheless interesting to share with other developers. It mostly
 contains **providers**.
+
 
 Installation
 ------------
