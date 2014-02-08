@@ -86,17 +86,17 @@ class OGDViennaAustriaProvider extends AbstractProvider implements ProviderInter
             'longitude'    => isset($data['features'][0]['geometry']['coordinates'][0]) ? $data['features'][0]['geometry']['coordinates'][0] : null,
             'latitude'     => isset($data['features'][0]['geometry']['coordinates'][1]) ? $data['features'][0]['geometry']['coordinates'][1] : null,
             'bounds'       => $bounds,
-            'streetNumber' => null, //info: zB 1/a - not available yet
-            'streetName'   => isset($data['features'][0]['properties']['Adresse']) ? $data['features'][0]['properties']['Adresse'] : null,
-            'cityDistrict' => null, //info: z.B. Donaustadt - not available yet
-            'city'         => isset($data['features'][0]['geometry']['coordinates'][0]) ? 'Vienna' : null,
-            'zipcode'      => isset($data['features'][0]['properties']['PLZ']) ? $data['features'][0]['properties']['PLZ'] : null,
-            'county'       => null, //info: ??? - not available yet
-            'countyCode'   => isset($data['features'][0]['properties']['Zaehlbezirk']) ? $data['features'][0]['properties']['Zaehlbezirk'] : null,
+            'streetNumber' => isset($data['features'][0]['properties']['StreetNumber']) ? $data['features'][0]['properties']['StreetNumber'] : null,
+            'streetName'   => isset($data['features'][0]['properties']['StreetName']) ? $data['features'][0]['properties']['StreetName'] : null,
+            'cityDistrict' => isset($data['features'][0]['properties']['CountrySubdivision']) ? $data['features'][0]['properties']['CountrySubdivision'] : null,
+            'city'         => isset($data['features'][0]['properties']['Municipality']) ? $data['features'][0]['properties']['Municipality'] : null,
+            'zipcode'      => isset($data['features'][0]['properties']['PostalCode']) ? $data['features'][0]['properties']['PostalCode'] : null,
+            'county'       => isset($data['features'][0]['properties']['MunicipalitySubdivision']) ? $data['features'][0]['properties']['MunicipalitySubdivision'] : null, //info: ??? - not available (yet ?)
+            'countyCode'   => null, //isset($data['features'][0]['properties']['Zaehlbezirk']) ? $data['features'][0]['properties']['Zaehlbezirk'] : null,
             'region'       => isset($data['features'][0]['geometry']['coordinates'][0]) ? 'Vienna' : null,
             'regionCode'   => isset($data['features'][0]['geometry']['coordinates'][0]) ? 'Vienna' : null,
             'country'      => isset($data['features'][0]['geometry']['coordinates'][0]) ? 'Austria' : null,
-            'countryCode'  => isset($data['features'][0]['geometry']['coordinates'][0]) ? 'AT' : null,
+            'countryCode'  => isset($data['features'][0]['properties']['CountryCode']) ? $data['features'][0]['properties']['CountryCode'] : null,
             'timezone'     => isset($data['features'][0]['geometry']['coordinates'][0]) ? 'Europe/Vienna' : null,
         )));
     }
