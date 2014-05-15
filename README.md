@@ -39,7 +39,7 @@ Please, read the [Geocoder's documentation](http://geocoder-php.org/Geocoder/).
 
 * [OGD Vienna](https://open.wien.at/site/datensatz/?id=c223b93a-2634-4f06-ac73-8709b9e16888) as Address-Based geocoding provider (exclusively in Vienna / Austria);
 * [Naver](http://developer.naver.com/wiki/pages/SrchAPI) as Address-Base geocoding provider (exclusively in South Korea).
-
+* [Geocodio](http://geocod.io/) as Address-Based geocoding and reverse geocoding provider (exclusively in USA).
 
 Contributing
 ------------
