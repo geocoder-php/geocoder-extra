@@ -54,10 +54,6 @@ class OGDViennaAustriaProviderTest extends TestCase
         $this->assertArrayHasKey('east', $result['bounds']);
         $this->assertArrayHasKey('west', $result['bounds']);
         $this->assertEquals('Stephansplatz', $result['streetName']);
-        //$this->assertEquals('1010',$result['zipcode']);
-        //$this->assertEquals('Vienna', $result['city']);
-        //$this->assertEquals('Vienna', $result['region']);
-		//$this->assertEquals('Vienna', $result['regionCode']);
         $this->assertEquals('AT', $result['countryCode']);
         $this->assertEquals('Europe/Vienna', $result['timezone']);
     }
