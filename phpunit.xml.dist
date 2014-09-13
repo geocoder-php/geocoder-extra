@@ -13,6 +13,8 @@
     <php>
         <!-- API Keys -->
         <!-- <server name="NAVER_API_KEY" value="YOUR_API_KEY" /> -->
+        <!-- <server name="HERE_APP_ID" value="YOUR_APP_ID" /> -->
+        <!-- <server name="HERE_APP_CODE" value="YOUR_APP_CODE" /> -->
     </php>
     <testsuites>
         <testsuite name="geocoder-extra Test Suite">
