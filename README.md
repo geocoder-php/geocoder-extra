@@ -42,6 +42,7 @@ Please, read the [Geocoder's documentation](http://geocoder-php.org/Geocoder/).
 * [Geocodio](http://geocod.io/) as Address-Based geocoding and reverse geocoding provider (exclusively in USA);
 * [IpInfo](http://ipinfo.io/developers) as IP-Based geocoding provider;
 * [Here](http://developer.here.com/rest-apis/documentation/geocoder/topics/overview.html) as Address-Based geocoding and reverse geocoding provider.
+* [Telize](http://www.telize.com) as IP-Based geocoding provider;
 
 
 Contributing
