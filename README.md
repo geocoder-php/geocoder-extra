@@ -46,6 +46,7 @@ Provider       | Address-Based? | IPv4-Based? | IPv6-Based? | Reverse?  | SSL? 
 [Here](http://developer.here.com/rest-apis/documentation/geocoder/topics/overview.html) | yes | no | no | yes | no | |
 [IpGeoBase](http://ipgeobase.ru/) | no | yes | no | yes | no | very accurate in Russia | |
 [Telize](http://www.telize.com) | no | yes | yes | no | no | | |
+[Baidu](http://developer.baidu.com/map/geocoding-api.htm) | yes | no | no | yes | China | API key required |
 
 
 Contributing
