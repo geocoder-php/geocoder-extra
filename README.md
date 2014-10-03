@@ -50,6 +50,7 @@ Please, read the [Geocoder's documentation](http://geocoder-php.org/Geocoder/).
 | [DataScienceToolkit](http://www.datasciencetoolkit.org/) | yes | yes | no | no | no | USA, Canada | |
 | [GeoCoder.ca](http://geocoder.ca/) | yes | no | no | yes | yes | USA, Canada | Optional API key can be provided. $1 CAD for 400 lookups |
 | [GeoCoder.us](http://geocoder.us/) | yes | no | no | no | no | USA | Free throttled service. $50 USD for 20000 requests for paid service |
+| [OIORest](http://geo.oiorest.dk/) | yes | no | no | yes | no | Denmark | |
 
 
 Contributing
