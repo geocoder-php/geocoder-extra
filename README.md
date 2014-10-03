@@ -37,13 +37,15 @@ Please, read the [Geocoder's documentation](http://geocoder-php.org/Geocoder/).
 
 ### Providers
 
-* [OGD Vienna](https://open.wien.at/site/datensatz/?id=c223b93a-2634-4f06-ac73-8709b9e16888) as Address-Based geocoding provider (exclusively in Vienna / Austria);
-* [Naver](http://developer.naver.com/wiki/pages/SrchAPI) as Address-Base geocoding provider (exclusively in South Korea);
-* [Geocodio](http://geocod.io/) as Address-Based geocoding and reverse geocoding provider (exclusively in USA);
-* [IpInfo](http://ipinfo.io/developers) as IP-Based geocoding provider;
-* [Here](http://developer.here.com/rest-apis/documentation/geocoder/topics/overview.html) as Address-Based geocoding and reverse geocoding provider;
-* [IpGeoBase](http://ipgeobase.ru/) as IPv4-Based geocoding provider (very accurate in Russia):
-* [Telize](http://www.telize.com) as IP-Based geocoding provider.
+Provider       | Address-Based? | IPv4-Based? | IPv6-Based? | Reverse?  | SSL?      | Coverage  | Terms |
+:------------- |:-------------- |:----------- |:----------- |:--------- |:--------- |:--------- |: ---- |
+[OGD Vienna](https://open.wien.at/site/datensatz/?id=c223b93a-2634-4f06-ac73-8709b9e16888) | yes | no | no | no | no | exclusively in Vienna / Austria | |
+[Naver](http://developer.naver.com/wiki/pages/SrchAPI) | yes | no | no | no | exclusively in South Korea | |
+[Geocodio](http://geocod.io/) | yes | no | no | yes | no | exclusively in USA | |
+[IpInfo](http://ipinfo.io/developers) | no | yes | yes | no | no | |
+[Here](http://developer.here.com/rest-apis/documentation/geocoder/topics/overview.html) | yes | no | no | yes | no | |
+[IpGeoBase](http://ipgeobase.ru/) | no | yes | no | yes | no | very accurate in Russia | |
+[Telize](http://www.telize.com) | no | yes | yes | no | no | | |
 
 
 Contributing
@@ -52,6 +54,36 @@ Contributing
 See [Geocoder's
 CONTRIBUTING](https://github.com/geocoder-php/Geocoder/blob/master/CONTRIBUTING.md)
 file.
+
+
+Unit Tests
+----------
+
+To run unit tests, you'll need `cURL` and a set of dependencies you can install
+using Composer:
+
+```
+composer install --dev
+```
+
+Once installed, run the following command:
+
+```
+phpunit
+```
+
+You'll obtain some _skipped_ unit tests due to the need of API keys.
+
+Rename the `phpunit.xml.dist` file to `phpunit.xml`, then uncomment the
+following lines and add your own API keys:
+
+``` xml
+<php>
+    <!-- <server name="BAIDU_API_KEY" value="YOUR_API_KEY" /> -->
+    </php>
+```
+
+You're done!
 
 
 License
