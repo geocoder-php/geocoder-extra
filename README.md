@@ -51,6 +51,7 @@ Please, read the [Geocoder's documentation](http://geocoder-php.org/Geocoder/).
 | [GeoCoder.ca](http://geocoder.ca/) | yes | no | no | yes | yes | USA, Canada | Optional API key can be provided. $1 CAD for 400 lookups |
 | [GeoCoder.us](http://geocoder.us/) | yes | no | no | no | no | USA | Free throttled service. $50 USD for 20000 requests for paid service |
 | [OIORest](http://geo.oiorest.dk/) | yes | no | no | yes | no | Denmark | |
+| [IGN OpenLS](http://api.ign.fr/accueil) yes | no | no | no | no | France | API key required |
 
 
 Contributing
@@ -85,7 +86,8 @@ following lines and add your own API keys:
 ``` xml
 <php>
     <!-- <server name="BAIDU_API_KEY" value="YOUR_API_KEY" /> -->
-    </php>
+    <!-- <server name="IGN_WEB_API_KEY" value="YOUR_API_KEY" /> -->
+</php>
 ```
 
 You're done!
