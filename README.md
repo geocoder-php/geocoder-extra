@@ -37,19 +37,19 @@ Please, read the [Geocoder's documentation](http://geocoder-php.org/Geocoder/).
 
 ### Providers
 
-Provider       | Address-Based? | IPv4-Based? | IPv6-Based? | Reverse?  | SSL?      | Coverage  | Terms |
-:------------- |:-------------- |:----------- |:----------- |:--------- |:--------- |:--------- |: ---- |
-[OGD Vienna](https://open.wien.at/site/datensatz/?id=c223b93a-2634-4f06-ac73-8709b9e16888) | yes | no | no | no | no | Vienna / Austria | |
-[Naver](http://developer.naver.com/wiki/pages/SrchAPI) | yes | no | no | no | South Korea | |
-[Geocodio](http://geocod.io/) | yes | no | no | yes | no | USA | |
-[IpInfo](http://ipinfo.io/developers) | no | yes | yes | no | no | |
-[Here](http://developer.here.com/rest-apis/documentation/geocoder/topics/overview.html) | yes | no | no | yes | no | |
-[IpGeoBase](http://ipgeobase.ru/) | no | yes | no | yes | no | Russia | |
-[Telize](http://www.telize.com) | no | yes | yes | no | no | | |
-[Baidu](http://developer.baidu.com/map/geocoding-api.htm) | yes | no | no | yes | China | API key required |
-[DataScienceToolkit](http://www.datasciencetoolkit.org/) | yes | yes | no | no | no | USA, Canada | |
-[GeoCoder.ca](http://geocoder.ca/) | yes | no | no | yes | supported | USA, Canada | Optional API key can be provided. $1 CAD for 400 lookups |
-[GeoCoder.us](http://geocoder.us/)  yes | no | no | no | no | USA | Free throttled service. $50 USD for 20000 requests for paid service |
+| Provider       | Address? | IPv4? | IPv6? | Reverse?  | SSL Support?      | Coverage  | Terms |
+|:-------------- |----------|-------|-------|-----------|-------------------|:--------- |:----- |
+| [OGD Vienna](https://open.wien.at/site/datensatz/?id=c223b93a-2634-4f06-ac73-8709b9e16888) | yes | no | no | no | no | Vienna / Austria | |
+| [Naver](http://developer.naver.com/wiki/pages/SrchAPI) | yes | no | no | no | no | South Korea | |
+| [Geocodio](http://geocod.io/) | yes | no | no | yes | no | USA | |
+| [IpInfo](http://ipinfo.io/developers) | no | yes | yes | no | no | |
+| [Here](http://developer.here.com/rest-apis/documentation/geocoder/topics/overview.html) | yes | no | no | yes | no | |
+| [IpGeoBase](http://ipgeobase.ru/) | no | yes | no | yes | no | Russia | |
+| [Telize](http://www.telize.com) | no | yes | yes | no | no | | |
+| [Baidu](http://developer.baidu.com/map/geocoding-api.htm) | yes | no | no | yes | no | China | API key required |
+| [DataScienceToolkit](http://www.datasciencetoolkit.org/) | yes | yes | no | no | no | USA, Canada | |
+| [GeoCoder.ca](http://geocoder.ca/) | yes | no | no | yes | yes | USA, Canada | Optional API key can be provided. $1 CAD for 400 lookups |
+| [GeoCoder.us](http://geocoder.us/) | yes | no | no | no | no | USA | Free throttled service. $50 USD for 20000 requests for paid service |
 
 
 Contributing
