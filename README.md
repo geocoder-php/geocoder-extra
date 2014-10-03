@@ -41,8 +41,9 @@ Please, read the [Geocoder's documentation](http://geocoder-php.org/Geocoder/).
 * [Naver](http://developer.naver.com/wiki/pages/SrchAPI) as Address-Base geocoding provider (exclusively in South Korea);
 * [Geocodio](http://geocod.io/) as Address-Based geocoding and reverse geocoding provider (exclusively in USA);
 * [IpInfo](http://ipinfo.io/developers) as IP-Based geocoding provider;
-* [Here](http://developer.here.com/rest-apis/documentation/geocoder/topics/overview.html) as Address-Based geocoding and reverse geocoding provider.
-* [Telize](http://www.telize.com) as IP-Based geocoding provider;
+* [Here](http://developer.here.com/rest-apis/documentation/geocoder/topics/overview.html) as Address-Based geocoding and reverse geocoding provider;
+* [IpGeoBase](http://ipgeobase.ru/) as IPv4-Based geocoding provider (very accurate in Russia):
+* [Telize](http://www.telize.com) as IP-Based geocoding provider.
 
 
 Contributing
