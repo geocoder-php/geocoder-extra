@@ -48,6 +48,7 @@ Provider       | Address-Based? | IPv4-Based? | IPv6-Based? | Reverse?  | SSL? 
 [Telize](http://www.telize.com) | no | yes | yes | no | no | | |
 [Baidu](http://developer.baidu.com/map/geocoding-api.htm) | yes | no | no | yes | China | API key required |
 [DataScienceToolkit](http://www.datasciencetoolkit.org/) | yes | yes | no | no | no | USA, Canada | |
+[GeoCoder.ca](http://geocoder.ca/) | yes | no | no | yes | supported | USA, Canada | Optional API key can be provided. $1 CAD for 400 lookups |
 
 
 Contributing
