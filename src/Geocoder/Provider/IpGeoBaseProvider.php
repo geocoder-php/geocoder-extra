@@ -57,7 +57,6 @@ class IpGeoBaseProvider extends AbstractProvider implements ProviderInterface
             'latitude'     => (double) $result->lat,
             'longitude'    => (double) $result->lng,
             'city'         => (string) $result->city,
-            'cityDistrict' => (string) $result->district,
             'region'       => (string) $result->region,
             'countryCode'  => (string) $result->country,
         )));

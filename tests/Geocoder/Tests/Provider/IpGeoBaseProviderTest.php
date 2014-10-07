@@ -113,7 +113,6 @@ class IpGeoBaseProviderTest extends TestCase
         $this->assertNull($result['streetName']);
         $this->assertEquals('Москва', $result['city']);
         $this->assertNull($result['zipcode']);
-        $this->assertEquals('Центральный федеральный округ', $result['cityDistrict']);
         $this->assertEquals('Москва', $result['region']);
         $this->assertNull($result['regionCode']);
         $this->assertNull($result['country']);
@@ -137,7 +136,6 @@ class IpGeoBaseProviderTest extends TestCase
         $this->assertNull($result['streetName']);
         $this->assertEquals('Киев', $result['city']);
         $this->assertNull($result['zipcode']);
-        $this->assertEquals('Центральная Украина', $result['cityDistrict']);
         $this->assertEquals('Киев', $result['region']);
         $this->assertNull($result['regionCode']);
         $this->assertNull($result['country']);
