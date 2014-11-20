@@ -132,54 +132,6 @@ class TelizeBaseProviderTest extends TestCase
         $this->assertEquals('America/Chicago', $result['timezone']);
     }
 
-    public function testGetGeocodedDataWithRealIPv4France()
-    {
-        $provider = new TelizeProvider($this->getAdapter());
-        $result   = $provider->getGeocodedData('88.188.221.14');
-
-        $this->assertInternalType('array', $result);
-        $this->assertCount(1, $result);
-
-        $result = $result[0];
-        $this->assertInternalType('array', $result);
-        $this->assertEquals(45.7797, $result['latitude'], '', 0.0001);
-        $this->assertEquals(3.0863, $result['longitude'], '', 0.0001);
-        $this->assertNull($result['streetNumber']);
-        $this->assertNull($result['streetName']);
-        $this->assertEquals('Clermont', $result['city']);
-        $this->assertEquals('63023', $result['zipcode']);
-        $this->assertNull($result['cityDistrict']);
-        $this->assertEquals('Auvergne', $result['region']);
-        $this->assertEquals('98', $result['regionCode']);
-        $this->assertEquals('France', $result['country']);
-        $this->assertEquals('FR', $result['countryCode']);
-        $this->assertEquals('Europe/Paris', $result['timezone']);
-    }
-
-    public function testGetGeocodedDataWithRealIPv6France()
-    {
-        $provider = new TelizeProvider($this->getAdapter());
-        $result   = $provider->getGeocodedData('::ffff:88.188.221.14');
-
-        $this->assertInternalType('array', $result);
-        $this->assertCount(1, $result);
-
-        $result = $result[0];
-        $this->assertInternalType('array', $result);
-        $this->assertEquals(45.7797, $result['latitude'], '', 0.0001);
-        $this->assertEquals(3.0863, $result['longitude'], '', 0.0001);
-        $this->assertNull($result['streetNumber']);
-        $this->assertNull($result['streetName']);
-        $this->assertEquals('Clermont', $result['city']);
-        $this->assertEquals('63023', $result['zipcode']);
-        $this->assertNull($result['cityDistrict']);
-        $this->assertEquals('Auvergne', $result['region']);
-        $this->assertEquals('98', $result['regionCode']);
-        $this->assertEquals('France', $result['country']);
-        $this->assertEquals('FR', $result['countryCode']);
-        $this->assertEquals('Europe/Paris', $result['timezone']);
-    }
-
     /**
      * @expectedException \Geocoder\Exception\UnsupportedException
      * @expectedExceptionMessage The TelizeProvider is not able to do reverse geocoding.
