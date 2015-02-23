@@ -126,18 +126,13 @@ class GeocodioProvider extends AbstractProvider implements ProviderInterface
 
                 $coordinates = $location['location'];
                 $address = $location['address_components'];
-                $street = $address['street'] ?: null;
-
-                if (!empty($address['suffix'])) {
-                    $address['street'] .= ' ' . $address['suffix'];
-                }
-
+                
                 $results[] = array_merge($this->getDefaults(), array(
 
                         'latitude'      => $coordinates['lat'] ?: null,
                         'longitude'     => $coordinates['lng'] ?: null,
                         'streetNumber'  => $address['number'] ?: null,
-                        'streetName'    => $address['street'] ?: null,
+                        'streetName'    => $address['formatted_street'] ?: null,
                         'city'          => $address['city'] ?: null,
                         'zipcode'       => $address['zip'] ?: null,
                         'county'        => $address['county'] ?: null,
