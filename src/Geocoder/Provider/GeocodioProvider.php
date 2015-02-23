@@ -128,17 +128,16 @@ class GeocodioProvider extends AbstractProvider implements ProviderInterface
                 $address = $location['address_components'];
                 
                 $results[] = array_merge($this->getDefaults(), array(
-
-                        'latitude'      => $coordinates['lat'] ?: null,
-                        'longitude'     => $coordinates['lng'] ?: null,
-                        'streetNumber'  => $address['number'] ?: null,
-                        'streetName'    => $address['formatted_street'] ?: null,
-                        'city'          => $address['city'] ?: null,
-                        'zipcode'       => $address['zip'] ?: null,
-                        'county'        => $address['county'] ?: null,
-                        'region'        => $address['state'] ?: null,
-                        'country'       => 'US'
-                    ));
+                    'latitude'      => $coordinates['lat'] ?: null,
+                    'longitude'     => $coordinates['lng'] ?: null,
+                    'streetNumber'  => isset($address['number']) ? $address['number'] : null,
+                    'streetName'    => isset($address['formatted_street']) ? $address['formatted_street'] : null,
+                    'city'          => isset($address['city']) ? $address['city'] : null,
+                    'zipcode'       => isset($address['zip']) ? $address['zip'] : null,
+                    'county'        => isset($address['county']) ? $address['county'] : null,
+                    'region'        => isset($address['state']) ? $address['state'] : null,
+                    'country'       => 'US'
+                ));
             }
         }
 
