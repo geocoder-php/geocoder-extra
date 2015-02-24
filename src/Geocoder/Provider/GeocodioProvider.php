@@ -126,7 +126,19 @@ class GeocodioProvider extends AbstractProvider implements ProviderInterface
 
                 $coordinates = $location['location'];
                 $address = $location['address_components'];
-                $street = $address['street'] ?: null;
+
+                //Geocodio does not always return a street, number, or suffix
+                if (!isset($address['street']) && isset($json['input']['address_components']['street'])) {
+                    //Sometimes Geocodio returns parsed information in the input
+                    $addressInput = $json['input']['address_components'];
+                    $address['street'] = $addressInput['street'];
+                    $address['number'] = $addressInput['number'];
+                    $address['suffix'] = $addressInput['suffix'];
+                } elseif (!isset($address['street'])) {
+                    $address['street'] = '';
+                    $address['number'] = ''; // No Street = No Number
+                    $address['suffix'] = '';
+                }
 
                 if (!empty($address['suffix'])) {
                     $address['street'] .= ' ' . $address['suffix'];
