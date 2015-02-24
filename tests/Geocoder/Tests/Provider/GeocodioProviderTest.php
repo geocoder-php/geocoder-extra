@@ -73,6 +73,63 @@ class GeocodioProviderTest extends TestCase
         $this->assertNull($result['timezone']);
     }
 
+    public function testGetGeocodedDataWithRealAddressThatDoesNotReturnStreet()
+    {
+        $api_key = $this->getApiKey('GEOCODIO_API_KEY');
+
+        if ($api_key === false) {
+            $this->markTestSkipped(self::MISSING_API_KEY);
+        }
+
+        $provider = new GeocodioProvider($this->getAdapter(), $api_key);
+        //Geocodio currently incorrectly parses this address, but Geocodio does know of the bug
+        $results  = $provider->getGeocodedData('386 Branam Rd Old Fort TN 37362');
+
+        $this->assertInternalType('array', $results);
+
+        $result = $results[0];
+        $this->assertEquals(35.049196999999999, $result['latitude'], '', 0.01);
+        $this->assertEquals(-84.735365999999999, $result['longitude'], '', 0.01);
+        $this->assertNull($result['bounds']);
+        $this->assertEquals('386', $result['streetNumber']);
+        $this->assertEquals('Branam Rd Old Ft', $result['streetName']); // Testing bad parsing
+        $this->assertEquals(37362, $result['zipcode']);
+        $this->assertEquals('Oldfort', $result['city']);
+        $this->assertNull($result['county']);
+        $this->assertEquals('TN', $result['region']);
+        $this->assertEquals('US', $result['country']);
+        $this->assertNull($result['countryCode']);
+        $this->assertNull($result['timezone']);
+    }
+
+    public function testGetGeocodedDataWithRealAddressWithoutStreet()
+    {
+        $api_key = $this->getApiKey('GEOCODIO_API_KEY');
+
+        if ($api_key === false) {
+            $this->markTestSkipped(self::MISSING_API_KEY);
+        }
+
+        $provider = new GeocodioProvider($this->getAdapter(), $api_key);
+        $results  = $provider->getGeocodedData('Old Fort TN 37362');
+
+        $this->assertInternalType('array', $results);
+
+        $result = $results[0];
+        $this->assertEquals(35.049196999999999, $result['latitude'], '', 0.01);
+        $this->assertEquals(-84.735365999999999, $result['longitude'], '', 0.01);
+        $this->assertNull($result['bounds']);
+        $this->assertEquals('', $result['streetNumber']);
+        $this->assertEquals('', $result['streetName']);
+        $this->assertEquals(37362, $result['zipcode']);
+        $this->assertEquals('Oldfort', $result['city']);
+        $this->assertNull($result['county']);
+        $this->assertEquals('TN', $result['region']);
+        $this->assertEquals('US', $result['country']);
+        $this->assertNull($result['countryCode']);
+        $this->assertNull($result['timezone']);
+    }
+
     /**
      * @expectedException \Geocoder\Exception\NoResultException
      */
