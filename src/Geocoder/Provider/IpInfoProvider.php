@@ -40,7 +40,7 @@ class IpInfoProvider extends AbstractProvider implements ProviderInterface
         $content = $this->getAdapter()->getContent($query);
         $data    = json_decode($content, true);
 
-        if (empty($data) || '' === $data['loc']) {
+        if (empty($data) || !isset($data['loc']) || '' === $data['loc']) {
             throw new NoResultException(sprintf('Could not execute query %s', $query));
         }
 
