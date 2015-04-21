@@ -10,16 +10,18 @@
 
 namespace Geocoder\Provider;
 
-use Geocoder\Exception\InvalidCredentialsException;
-use Geocoder\Exception\NoResultException;
-use Geocoder\Exception\UnsupportedException;
-use Geocoder\HttpAdapter\HttpAdapterInterface;
+use Geocoder\Exception\InvalidCredentials as InvalidCredentialsException;
+use Geocoder\Exception\NoResult as NoResultException;
+use Geocoder\Exception\UnsupportedOperation as UnsupportedException;
+use Ivory\HttpAdapter\HttpAdapterInterface;
 
 /**
  * @author Antoine Corcy <contact@sbin.dk>
  */
-class HereProvider extends AbstractProvider implements ProviderInterface
+class HereProvider extends AbstractHttpProvider implements Provider, LocaleAwareProvider
 {
+    use LocaleTrait;
+
     /**
      * @var string
      */
@@ -48,7 +50,11 @@ class HereProvider extends AbstractProvider implements ProviderInterface
      */
     public function __construct(HttpAdapterInterface $adapter, $appId, $appCode, $locale = null)
     {
-        parent::__construct($adapter, $locale);
+        parent::__construct($adapter);
+
+        if ($locale) {
+            $this->setLocale($locale);
+        }
 
         $this->appId   = $appId;
         $this->appCode = $appCode;
@@ -65,10 +71,10 @@ class HereProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function getGeocodedData($address)
+    public function geocode($value)
     {
         // This API doesn't handle IPs
-        if (filter_var($address, FILTER_VALIDATE_IP)) {
+        if (filter_var($value, FILTER_VALIDATE_IP)) {
             throw new UnsupportedException('The HereProvider does not support IP addresses.');
         }
 
@@ -78,7 +84,7 @@ class HereProvider extends AbstractProvider implements ProviderInterface
 
         $query = sprintf(
             self::GEOCODE_ENDPOINT_URL,
-            $this->appId, $this->appCode, $this->getMaxResults(), urlencode($address), $this->getLocale()
+            $this->appId, $this->appCode, $this->getLimit(), urlencode($value), $this->getLocale()
         );
 
         return $this->executeQuery($query);
@@ -87,7 +93,7 @@ class HereProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function getReversedData(array $coordinates)
+    public function reverse($latitude, $longitude)
     {
         if (null === $this->appId || null === $this->appCode) {
             throw new InvalidCredentialsException('No App ID or code provided.');
@@ -95,7 +101,7 @@ class HereProvider extends AbstractProvider implements ProviderInterface
 
         $query = sprintf(
             self::REVERSE_ENDPOINT_URL,
-            $this->appId, $this->appCode, $this->getMaxResults(), $coordinates[0], $coordinates[1]
+            $this->appId, $this->appCode, $this->getLimit(), $latitude, $longitude
         );
 
         return $this->executeQuery($query);
@@ -109,7 +115,7 @@ class HereProvider extends AbstractProvider implements ProviderInterface
     protected function executeQuery($query)
     {
         $query   = null !== $this->getLocale() ? sprintf('%s&language=%s', $query, $this->getLocale()) : $query;
-        $content = $this->getAdapter()->getContent($query);
+        $content = $this->getAdapter()->get($query)->getBody();
 
         if (!$data = json_decode($content, true)) {
             throw new NoResultException(sprintf('Could not execute query: %s', $query));
@@ -156,6 +162,7 @@ class HereProvider extends AbstractProvider implements ProviderInterface
                 'countryCode'  => isset($address['Country'])     ? $address['Country']     : null,
                 'region'       => $this->findByKey('StateName', $additionalData),
                 'country'      => $this->findByKey('CountryName', $additionalData),
+                'countyCode'   => null,
             ));
         }
 
