@@ -3,43 +3,43 @@
 namespace Geocoder\Tests\Provider;
 
 use Geocoder\Tests\TestCase;
-use Geocoder\Provider\GeocoderCaProvider;
+use Geocoder\Provider\GeocoderCa;
 
 /**
  * @author Antoine Corcy <contact@sbin.dk>
  */
-class GeocoderCaProviderTest extends TestCase
+class GeocoderCaTest extends TestCase
 {
     public function testGetName()
     {
-        $provider = new GeocoderCaProvider($this->getMockAdapter($this->never()));
+        $provider = new GeocoderCa($this->getMockAdapter($this->never()));
         $this->assertEquals('geocoder_ca', $provider->getName());
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://geocoder.ca/?geoit=xml&locate=1600+Pennsylvania+Ave%2C+Washington%2C+DC
      */
     public function testGetGeocodedDataWithAddress()
     {
-        $provider = new GeocoderCaProvider($this->getMockAdapter());
-        $provider->getGeocodedData('1600 Pennsylvania Ave, Washington, DC');
+        $provider = new GeocoderCa($this->getMockAdapter());
+        $provider->geocode('1600 Pennsylvania Ave, Washington, DC');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://geocoder.ca/?geoit=xml&locate=foobar
      */
     public function testGetGeocodedDataWithWrongAddress()
     {
-        $provider = new GeocoderCaProvider($this->getAdapter());
-        $provider->getGeocodedData('foobar');
+        $provider = new GeocoderCa($this->getAdapter());
+        $provider->geocode('foobar');
     }
 
     public function testGetGeocodedDataUsingSSL()
     {
-        $provider = new GeocoderCaProvider($this->getAdapter(), true);
-        $provider->getGeocodedData('1600 Pennsylvania Ave, Washington, DC');
+        $provider = new GeocoderCa($this->getAdapter(), true);
+        $provider->geocode('1600 Pennsylvania Ave, Washington, DC');
     }
 
     /**
@@ -48,8 +48,8 @@ class GeocoderCaProviderTest extends TestCase
      */
     public function testGetGeocodedDataWithWrongInvalidApiKey()
     {
-        $provider = new GeocoderCaProvider($this->getAdapter(), true, 'bad-api-key');
-        $provider->getGeocodedData('foobar');
+        $provider = new GeocoderCa($this->getAdapter(), true, 'bad-api-key');
+        $provider->geocode('foobar');
     }
 
     /**
@@ -66,14 +66,14 @@ class GeocoderCaProviderTest extends TestCase
     </error>
 </geodata>
 XML;
-        $provider = new GeocoderCaProvider($this->getMockAdapterReturns($xml), true, 'api-key');
-        $provider->getGeocodedData('foobar');
+        $provider = new GeocoderCa($this->getMockAdapterReturns($xml), true, 'api-key');
+        $provider->geocode('foobar');
     }
 
     public function testGetGeocodedDataWithRealAddressUS()
     {
-        $provider = new GeocoderCaProvider($this->getAdapter());
-        $result   = $provider->getGeocodedData('1600 Pennsylvania Ave, Washington, DC');
+        $provider = new GeocoderCa($this->getAdapter());
+        $result   = $provider->geocode('1600 Pennsylvania Ave, Washington, DC');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -97,8 +97,8 @@ XML;
 
     public function testGetGeocodedDataWithRealAddressCA()
     {
-        $provider = new GeocoderCaProvider($this->getAdapter());
-        $result   = $provider->getGeocodedData('4208 Gallaghers, Kelowna, BC');
+        $provider = new GeocoderCa($this->getAdapter());
+        $result   = $provider->geocode('4208 Gallaghers, Kelowna, BC');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -121,59 +121,59 @@ XML;
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The GeocoderCaProvider does not support IP addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The GeocoderCa does not support IP addresses.
      */
     public function testGetGeocodedDataWithLocalhostIPv4()
     {
-        $provider = new GeocoderCaProvider($this->getMockAdapter($this->never()));
-        $provider->getGeocodedData('127.0.0.1');
+        $provider = new GeocoderCa($this->getMockAdapter($this->never()));
+        $provider->geocode('127.0.0.1');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The GeocoderCaProvider does not support IP addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The GeocoderCa does not support IP addresses.
      */
     public function testGetGeocodedDataWithLocalhostIPv6()
     {
-        $provider = new GeocoderCaProvider($this->getMockAdapter($this->never()));
-        $provider->getGeocodedData('::1');
+        $provider = new GeocoderCa($this->getMockAdapter($this->never()));
+        $provider->geocode('::1');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The GeocoderCaProvider does not support IP addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The GeocoderCa does not support IP addresses.
      */
     public function testGetGeocodedDataWithIPv4()
     {
-        $provider = new GeocoderCaProvider($this->getAdapter());
-        $provider->getGeocodedData('74.200.247.59');
+        $provider = new GeocoderCa($this->getAdapter());
+        $provider->geocode('74.200.247.59');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The GeocoderCaProvider does not support IP addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The GeocoderCa does not support IP addresses.
      */
     public function testGetGeocodedDataWithIPv6()
     {
-        $provider = new GeocoderCaProvider($this->getAdapter());
-        $provider->getGeocodedData('::ffff:74.200.247.59');
+        $provider = new GeocoderCa($this->getAdapter());
+        $provider->geocode('::ffff:74.200.247.59');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not resolve coordinates 1, 2
      */
     public function testGetReverseDataWithWrongCoordinate()
     {
-        $provider = new GeocoderCaProvider($this->getAdapter());
-        $provider->getReversedData(array(1, 2));
+        $provider = new GeocoderCa($this->getAdapter());
+        $provider->reverse(array(1, 2));
     }
 
     public function testGetReversedDataUsingSSL()
     {
-        $provider = new GeocoderCaProvider($this->getAdapter(), true);
-        $provider->getReversedData(array('40.707507', '-74.011255'));
+        $provider = new GeocoderCa($this->getAdapter(), true);
+        $provider->reverse(array('40.707507', '-74.011255'));
     }
 
     /**
@@ -182,8 +182,8 @@ XML;
      */
     public function testGetReversedDataWithWrongInvalidApiKey()
     {
-        $provider = new GeocoderCaProvider($this->getAdapter(), true, 'bad-api-key');
-        $provider->getReversedData(array('40.707507', '-74.011255'));
+        $provider = new GeocoderCa($this->getAdapter(), true, 'bad-api-key');
+        $provider->reverse(array('40.707507', '-74.011255'));
     }
 
     /**
@@ -200,14 +200,14 @@ XML;
     </error>
 </geodata>
 XML;
-        $provider = new GeocoderCaProvider($this->getMockAdapterReturns($xml), true, 'api-key');
-        $provider->getReversedData(array('40.707507', '-74.011255'));
+        $provider = new GeocoderCa($this->getMockAdapterReturns($xml), true, 'api-key');
+        $provider->reverse(array('40.707507', '-74.011255'));
     }
 
     public function testGetReversedDataWithRealCoordinates()
     {
-        $provider = new GeocoderCaProvider($this->getAdapter());
-        $result   = $provider->getReversedData(array('40.707507', '-74.011255'));
+        $provider = new GeocoderCa($this->getAdapter());
+        $result   = $provider->reverse(array('40.707507', '-74.011255'));
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);

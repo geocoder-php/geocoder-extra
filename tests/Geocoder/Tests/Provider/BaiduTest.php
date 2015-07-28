@@ -3,16 +3,16 @@
 namespace Geocoder\Tests\Provider;
 
 use Geocoder\Tests\TestCase;
-use Geocoder\Provider\BaiduProvider;
+use Geocoder\Provider\Baidu;
 
 /**
  * @author Antoine Corcy <contact@sbin.dk>
  */
-class BaiduProviderTest extends TestCase
+class BaiduTest extends TestCase
 {
     public function testGetName()
     {
-        $provider = new BaiduProvider($this->getMockAdapter($this->never()), 'api_key');
+        $provider = new Baidu($this->getMockAdapter($this->never()), 'api_key');
         $this->assertEquals('baidu', $provider->getName());
     }
 
@@ -21,68 +21,68 @@ class BaiduProviderTest extends TestCase
      */
     public function testGetGeocodedDataWithNullApiKey()
     {
-        $provider = new BaiduProvider($this->getMockAdapter($this->never()), null);
-        $provider->getGeocodedData('foo');
+        $provider = new Baidu($this->getMockAdapter($this->never()), null);
+        $provider->geocode('foo');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://api.map.baidu.com/geocoder?output=json&key=api_key&address=
      */
     public function testGetGeocodedDataWithNull()
     {
-        $provider = new BaiduProvider($this->getMockAdapter(), 'api_key');
-        $provider->getGeocodedData(null);
+        $provider = new Baidu($this->getMockAdapter(), 'api_key');
+        $provider->geocode(null);
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://api.map.baidu.com/geocoder?output=json&key=api_key&address=
      */
     public function testGetGeocodedDataWithEmpty()
     {
-        $provider = new BaiduProvider($this->getMockAdapter(), 'api_key');
-        $provider->getGeocodedData('');
+        $provider = new Baidu($this->getMockAdapter(), 'api_key');
+        $provider->geocode('');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage ould not execute query http://api.map.baidu.com/geocoder?output=json&key=api_key&address=%E7%99%BE%E5%BA%A6%E5%A4%A7%E5%8E%A6
      */
     public function testGetGeocodedDataWithAddressContentReturnNull()
     {
-        $provider = new BaiduProvider($this->getMockAdapterReturns(null), 'api_key');
-        $provider->getGeocodedData('百度大厦'); // Baidu Building
+        $provider = new Baidu($this->getMockAdapterReturns(null), 'api_key');
+        $provider->geocode('百度大厦'); // Baidu Building
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage ould not execute query http://api.map.baidu.com/geocoder?output=json&key=api_key&address=%E7%99%BE%E5%BA%A6%E5%A4%A7%E5%8E%A6
      */
     public function testGetGeocodedDataWithAddress()
     {
-        $provider = new BaiduProvider($this->getMockAdapter(), 'api_key');
-        $provider->getGeocodedData('百度大厦'); // Baidu Building
+        $provider = new Baidu($this->getMockAdapter(), 'api_key');
+        $provider->geocode('百度大厦'); // Baidu Building
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The BaiduProvider does not support IP addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The Baidu provider does not support IP addresses.
      */
     public function testGetGeocodedDataWithLocalhostIPv4()
     {
-        $provider = new BaiduProvider($this->getMockAdapter($this->never()), 'api_key');
-        $provider->getGeocodedData('127.0.0.1');
+        $provider = new Baidu($this->getMockAdapter($this->never()), 'api_key');
+        $provider->geocode('127.0.0.1');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The BaiduProvider does not support IP addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The Baidu provider does not support IP addresses.
      */
     public function testGetGeocodedDataWithLocalhostIPv6()
     {
-        $provider = new BaiduProvider($this->getMockAdapter($this->never()), 'api_key');
-        $provider->getGeocodedData('::1');
+        $provider = new Baidu($this->getMockAdapter($this->never()), 'api_key');
+        $provider->geocode('::1');
     }
 
     public function testGetGeocodedDataWithRealAddress()
@@ -91,8 +91,8 @@ class BaiduProviderTest extends TestCase
             $this->markTestSkipped('You need to configure the BAIDU_API_KEY value in phpunit.xml');
         }
 
-        $provider = new BaiduProvider($this->getAdapter(), $_SERVER['BAIDU_API_KEY'], 'fr-FR');
-        $result   = $provider->getGeocodedData('上地十街10号 北京市'); // Beijing
+        $provider = new Baidu($this->getAdapter(), $_SERVER['BAIDU_API_KEY'], 'fr-FR');
+        $result   = $provider->geocode('上地十街10号 北京市'); // Beijing
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -116,33 +116,33 @@ class BaiduProviderTest extends TestCase
     }
 
     /**
-     * @expectedException Geocoder\Exception\NoResultException
+     * @expectedException Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://api.map.baidu.com/geocoder?output=json&key=api_key&location=1.000000,2.000000
      */
     public function testGetReversedData()
     {
-        $provider = new BaiduProvider($this->getMockAdapter(), 'api_key');
-        $provider->getReversedData(array(1, 2));
+        $provider = new Baidu($this->getMockAdapter(), 'api_key');
+        $provider->reverse(1, 2);
     }
 
     /**
-     * @expectedException \Geocoder\Exception\InvalidCredentialsException
+     * @expectedException \Geocoder\Exception\InvalidCredentials
      * @expectedExceptionMessage No API Key provided
      */
     public function testGetReversedDataWithoutApiKey()
     {
-        $provider = new BaiduProvider($this->getMockAdapter($this->never()), null);
-        $provider->getReversedData(array(1, 2));
+        $provider = new Baidu($this->getMockAdapter($this->never()), null);
+        $provider->reverse(1, 2);
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://api.map.baidu.com/geocoder?output=json&key=api_key&location=39.983424,116.322987
      */
     public function testGetReversedDataWithCoordinatesContentReturnNull()
     {
-        $provider = new BaiduProvider($this->getMockAdapterReturns(null), 'api_key');
-        $provider->getReversedData(array(39.983424, 116.322987));
+        $provider = new Baidu($this->getMockAdapterReturns(null), 'api_key');
+        $provider->reverse(39.983424, 116.322987);
     }
 
     public function testGetReversedDataWithRealCoordinates()
@@ -151,8 +151,8 @@ class BaiduProviderTest extends TestCase
             $this->markTestSkipped('You need to configure the BAIDU_API_KEY value in phpunit.xml');
         }
 
-        $provider = new BaiduProvider($this->getAdapter(), $_SERVER['BAIDU_API_KEY']);
-        $result   = $provider->getReversedData(array(39.983424, 116.322987));
+        $provider = new Baidu($this->getAdapter(), $_SERVER['BAIDU_API_KEY']);
+        $result   = $provider->reverse(39.983424, 116.322987);
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -176,8 +176,8 @@ class BaiduProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The BaiduProvider does not support IP addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The Baidu provider does not support IP addresses.
      */
     public function testGetGeocodedDataWithRealIPv4()
     {
@@ -185,13 +185,13 @@ class BaiduProviderTest extends TestCase
             $this->markTestSkipped('You need to configure the BAIDU_API_KEY value in phpunit.xml');
         }
 
-        $provider = new BaiduProvider($this->getAdapter(), $_SERVER['BAIDU_API_KEY']);
-        $provider->getGeocodedData('88.188.221.14');
+        $provider = new Baidu($this->getAdapter(), $_SERVER['BAIDU_API_KEY']);
+        $provider->geocode('88.188.221.14');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The BaiduProvider does not support IP addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The Baidu provider does not support IP addresses.
      */
     public function testGetGeocodedDataWithRealIPv6()
     {
@@ -199,12 +199,12 @@ class BaiduProviderTest extends TestCase
             $this->markTestSkipped('You need to configure the BAIDU_API_KEY value in phpunit.xml');
         }
 
-        $provider = new BaiduProvider($this->getAdapter(), $_SERVER['BAIDU_API_KEY']);
-        $provider->getGeocodedData('::ffff:88.188.221.14');
+        $provider = new Baidu($this->getAdapter(), $_SERVER['BAIDU_API_KEY']);
+        $provider->geocode('::ffff:88.188.221.14');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\InvalidCredentialsException
+     * @expectedException \Geocoder\Exception\InvalidCredentials
      * @expectedExceptionMessage API Key provided is not valid.
      */
     public function testInvalidCredential()
@@ -216,7 +216,7 @@ class BaiduProviderTest extends TestCase
 }
 JSON;
 
-        $provider = new BaiduProvider($this->getMockAdapterReturns($json), 'api_key');
-        $provider->getGeocodedData('百度大厦'); // Baidu Building
+        $provider = new Baidu($this->getMockAdapterReturns($json), 'api_key');
+        $provider->geocode('百度大厦'); // Baidu Building
     }
 }

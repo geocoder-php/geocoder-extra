@@ -10,13 +10,14 @@
 
 namespace Geocoder\Provider;
 
-use Geocoder\Exception\UnsupportedException;
-use Geocoder\Exception\NoResultException;
+use Geocoder\Geocoder;
+use Geocoder\Exception\NoResult;
+use Geocoder\Exception\UnsupportedOperation;
 
 /**
  * @author Antoine Corcy <contact@sbin.dk>
  */
-class GeocoderUsProvider extends AbstractProvider implements ProviderInterface
+class GeocoderUs extends AbstractHttpProvider implements Geocoder
 {
     /**
      * @var string
@@ -26,11 +27,11 @@ class GeocoderUsProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function getGeocodedData($address)
+    public function geocode($address)
     {
         // This API doesn't handle IPs
         if (filter_var($address, FILTER_VALIDATE_IP)) {
-            throw new UnsupportedException('The GeocoderUsProvider does not support IP addresses.');
+            throw new UnsupportedOperation('The GeocoderUs provider does not support IP addresses.');
         }
 
         $query = sprintf(self::ENDPOINT_URL, urlencode($address));
@@ -41,9 +42,9 @@ class GeocoderUsProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function getReversedData(array $coordinates)
+    public function reverse($latitude, $longitude)
     {
-        throw new UnsupportedException('The GeocoderUsProvider is not able to do reverse geocoding.');
+        throw new UnsupportedOperation('The GeocoderUs provider is not able to do reverse geocoding.');
     }
 
     /**
@@ -61,11 +62,11 @@ class GeocoderUsProvider extends AbstractProvider implements ProviderInterface
      */
     protected function executeQuery($query)
     {
-        $content = $this->getAdapter()->getContent($query);
+        $content = (string) $this->getAdapter()->get($query)->getBody();
 
         $doc = new \DOMDocument();
         if (!@$doc->loadXML($content)) {
-            throw new NoResultException(sprintf('Could not execute query %s', $query));
+            throw new NoResult(sprintf('Could not execute query %s', $query));
         }
 
         $xpath = new \SimpleXMLElement($content);

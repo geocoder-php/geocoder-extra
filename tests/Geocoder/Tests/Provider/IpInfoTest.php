@@ -5,7 +5,7 @@ namespace Geocoder\Tests\Provider;
 use Geocoder\Tests\TestCase;
 use Geocoder\Provider\IpInfoProvider;
 
-class IpInfoProviderTest extends TestCase
+class IpInfoTest extends TestCase
 {
     public function testGetName()
     {

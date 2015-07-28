@@ -10,15 +10,16 @@
 
 namespace Geocoder\Provider;
 
-use Geocoder\HttpAdapter\HttpAdapterInterface;
-use Geocoder\Exception\InvalidCredentialsException;
-use Geocoder\Exception\NoResultException;
-use Geocoder\Exception\UnsupportedException;
+use Geocoder\Geocoder;
+use Ivory\HttpAdapter\HttpAdapterInterface;
+use Geocoder\Exception\InvalidCredentials;
+use Geocoder\Exception\NoResult;
+use Geocoder\Exception\UnsupportedOperation;
 
 /**
  * @author Antoine Corcy <contact@sbin.dk>
  */
-class BaiduProvider extends AbstractProvider implements ProviderInterface
+class Baidu extends AbstractHttpProvider implements Geocoder
 {
     /**
      * @var string
@@ -49,15 +50,15 @@ class BaiduProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function getGeocodedData($address)
+    public function geocode($address)
     {
         if (null === $this->apiKey) {
-            throw new InvalidCredentialsException('No API Key provided');
+            throw new InvalidCredentials('No API Key provided');
         }
 
         // This API doesn't handle IPs
         if (filter_var($address, FILTER_VALIDATE_IP)) {
-            throw new UnsupportedException('The BaiduProvider does not support IP addresses.');
+            throw new UnsupportedOperation('The Baidu provider does not support IP addresses.');
         }
 
         $query = sprintf(self::GEOCODE_ENDPOINT_URL, $this->apiKey, rawurlencode($address));
@@ -68,13 +69,13 @@ class BaiduProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function getReversedData(array $coordinates)
+    public function reverse($latitude, $longitude)
     {
         if (null === $this->apiKey) {
-            throw new InvalidCredentialsException('No API Key provided');
+            throw new InvalidCredentials('No API Key provided');
         }
 
-        $query = sprintf(self::REVERSE_ENDPOINT_URL, $this->apiKey, $coordinates[0], $coordinates[1]);
+        $query = sprintf(self::REVERSE_ENDPOINT_URL, $this->apiKey, $latitude, $longitude);
 
         return $this->executeQuery($query);
     }
@@ -92,33 +93,36 @@ class BaiduProvider extends AbstractProvider implements ProviderInterface
      *
      * @return array
      */
-    protected function executeQuery($query)
+    private function executeQuery($query)
     {
-        $content = $this->getAdapter()->getContent($query);
+        $content = (string) $this->getAdapter()->get($query)->getBody();
 
         if (null === $content) {
-            throw new NoResultException(sprintf('Could not execute query %s', $query));
+            throw new NoResult(sprintf('Could not execute query %s', $query));
         }
 
         $data = (array) json_decode($content, true);
 
         if (empty($data) || false === $data) {
-            throw new NoResultException(sprintf('Could not execute query %s', $query));
+            throw new NoResult(sprintf('Could not execute query %s', $query));
         }
 
         if ('INVALID_KEY' === $data['status']) {
-            throw new InvalidCredentialsException('API Key provided is not valid.');
+            throw new InvalidCredentials('API Key provided is not valid.');
         }
 
-        return array(array_merge($this->getDefaults(), array(
+        $results[] = array_merge($this->getDefaults(), [
             'latitude'     => isset($data['result']['location']['lat']) ? $data['result']['location']['lat'] : null,
             'longitude'    => isset($data['result']['location']['lng']) ? $data['result']['location']['lng'] : null,
             'streetNumber' => isset($data['result']['addressComponent']['street_number']) ? $data['result']['addressComponent']['street_number'] : null,
             'streetName'   => isset($data['result']['addressComponent']['street']) ? $data['result']['addressComponent']['street'] : null,
-            'city'         => isset($data['result']['addressComponent']['city']) ? $data['result']['addressComponent']['city'] : null,
-            'cityDistrict' => isset($data['result']['addressComponent']['district']) ? $data['result']['addressComponent']['district'] : null,
+            'locality'     => isset($data['result']['addressComponent']['city']) ? $data['result']['addressComponent']['city'] : null,
+            // TODO: find a corresponding field for this
+            // 'cityDistrict' => isset($data['result']['addressComponent']['district']) ? $data['result']['addressComponent']['district'] : null,
             'county'       => isset($data['result']['addressComponent']['province']) ? $data['result']['addressComponent']['province'] : null,
             'countyCode'   => isset($data['result']['cityCode']) ? $data['result']['cityCode'] : null,
-        )));
+        ]);
+
+        return $this->returnResults($results);
     }
 }

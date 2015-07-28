@@ -17,7 +17,7 @@ use Geocoder\HttpAdapter\HttpAdapterInterface;
 /**
  * @author Tudor Matei <tudor@tudormatei.com>
  */
-class TelizeProvider extends AbstractProvider implements ProviderInterface
+class Telize extends AbstractProvider implements Geocoder
 {
     /**
      * @var string

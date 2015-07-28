@@ -9,7 +9,7 @@ use Geocoder\Provider\OGDViennaAustriaProvider;
  * @author Robert Harm <www.harm.co.at>
  * Data source: City of Vienna, http://data.wien.gv.at
  */
-class OGDViennaAustriaProviderTest extends TestCase
+class OGDViennaAustriaTest extends TestCase
 {
     public function testGetName()
     {

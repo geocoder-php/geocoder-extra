@@ -8,7 +8,7 @@ use Geocoder\Provider\NaverProvider;
 /**
  * @author Antoine Corcy <contact@sbin.dk>
  */
-class NaverProviderTest extends TestCase
+class NaverTest extends TestCase
 {
     public function testGetName()
     {

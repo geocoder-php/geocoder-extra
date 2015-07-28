@@ -18,7 +18,7 @@ use Geocoder\Exception\NoResultException;
  *
  * @author Robert Harm <www.harm.co.at>
  */
-class OGDViennaAustriaProvider extends AbstractProvider implements ProviderInterface
+class OGDViennaAustria extends AbstractProvider implements Geocoder
 {
     /**
      * @var string

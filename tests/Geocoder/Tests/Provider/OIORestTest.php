@@ -8,7 +8,7 @@ use Geocoder\Provider\OIORestProvider;
 /**
  * @author Antoine Corcy <contact@sbin.dk>
  */
-class OIORestProviderTest extends TestCase
+class OIORestTest extends TestCase
 {
     public function testGetName()
     {

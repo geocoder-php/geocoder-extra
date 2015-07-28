@@ -16,7 +16,7 @@ use Geocoder\Exception\NoResultException;
 /**
  * @author Antoine Corcy <contact@sbin.dk>
  */
-class OIORestProvider extends AbstractProvider implements ProviderInterface
+class OIORest extends AbstractProvider implements Geocoder
 {
     /**
      * @var string

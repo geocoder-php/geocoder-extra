@@ -18,7 +18,7 @@ use Geocoder\Exception\NoResultException;
 /**
  * @author Antoine Corcy <contact@sbin.dk>
  */
-class NaverProvider extends AbstractProvider implements ProviderInterface
+class Naver extends AbstractProvider implements Geocoder
 {
     /**
      * @var string
