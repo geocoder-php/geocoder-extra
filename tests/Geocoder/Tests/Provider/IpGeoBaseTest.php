@@ -8,7 +8,7 @@ use Geocoder\Provider\IpGeoBaseProvider;
 /**
  * @author Antoine Corcy <contact@sbin.dk>
  */
-class IpGeoBaseProviderTest extends TestCase
+class IpGeoBaseTest extends TestCase
 {
     public function testGetName()
     {

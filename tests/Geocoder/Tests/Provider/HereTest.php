@@ -8,7 +8,7 @@ use Geocoder\Provider\HereProvider;
 /**
  * @author Antoine Corcy <contact@sbin.dk>
  */
-class HereProviderTest extends TestCase
+class HereTest extends TestCase
 {
     public function testGetName()
     {

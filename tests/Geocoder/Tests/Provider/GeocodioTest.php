@@ -3,36 +3,36 @@
 namespace Geocoder\Tests\Provider;
 
 use Geocoder\Tests\TestCase;
-use Geocoder\Provider\GeocodioProvider;
+use Geocoder\Provider\Geocodio;
 
-class GeocodioProviderTest extends TestCase
+class GeocodioTest extends TestCase
 {
     const MISSING_API_KEY = 'You need to configure the GEOCODIO_API_KEY value in phpunit.xml';
 
     public function testGetName()
     {
-        $provider = new GeocodioProvider($this->getMockAdapter($this->never()), 'api_key');
+        $provider = new Geocodio($this->getMockAdapter($this->never()), 'api_key');
         $this->assertEquals('geocodio', $provider->getName());
     }
 
     /**
-     * @expectedException Geocoder\Exception\NoResultException
+     * @expectedException Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not find results for given query: http://api.geocod.io/v1/geocode?q=foobar&api_key=9999
      */
     public function testGetGeocodedData()
     {
-        $provider = new GeocodioProvider($this->getMockAdapter(), '9999');
-        $provider->getGeocodedData('foobar');
+        $provider = new Geocodio($this->getMockAdapter(), '9999');
+        $provider->geocode('foobar');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query: http://api.geocod.io/v1/geocode?q=1+Infinite+Loop+Cupertino%2C+CA+95014&api_key=9999
      */
     public function testGetGeocodedDataWithAddressGetsNullContent()
     {
-        $provider = new GeocodioProvider($this->getMockAdapterReturns(null), '9999');
-        $provider->getGeocodedData('1 Infinite Loop Cupertino, CA 95014');
+        $provider = new Geocodio($this->getMockAdapterReturns(null), '9999');
+        $provider->geocode('1 Infinite Loop Cupertino, CA 95014');
     }
 
     /**
@@ -41,8 +41,8 @@ class GeocodioProviderTest extends TestCase
      */
     public function testGetGeocodedDataWithBadAPIKeyThrowsException()
     {
-        $provider = new GeocodioProvider($this->getAdapter(), '9999');
-        $results  = $provider->getGeocodedData('1 Infinite Loop Cupertino, CA 95014');
+        $provider = new Geocodio($this->getAdapter(), '9999');
+        $results  = $provider->geocode('1 Infinite Loop Cupertino, CA 95014');
     }
 
     public function testGetGeocodedDataWithRealAddress()
@@ -53,8 +53,8 @@ class GeocodioProviderTest extends TestCase
             $this->markTestSkipped(self::MISSING_API_KEY);
         }
 
-        $provider = new GeocodioProvider($this->getAdapter(), $api_key);
-        $results  = $provider->getGeocodedData('1 Infinite Loop Cupertino, CA 95014');
+        $provider = new Geocodio($this->getAdapter(), $api_key);
+        $results  = $provider->geocode('1 Infinite Loop Cupertino, CA 95014');
 
         $this->assertInternalType('array', $results);
 
@@ -74,7 +74,7 @@ class GeocodioProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      */
     public function testGetReversedData()
     {
@@ -84,8 +84,8 @@ class GeocodioProviderTest extends TestCase
             $this->markTestSkipped(self::MISSING_API_KEY);
         }
 
-        $provider = new GeocodioProvider($this->getMockAdapter(), $api_key);
-        $provider->getReversedData(array(1, 2));
+        $provider = new Geocodio($this->getMockAdapter(), $api_key);
+        $provider->reverse(array(1, 2));
     }
 
     public function testGetReversedDataWithRealCoordinates()
@@ -96,8 +96,8 @@ class GeocodioProviderTest extends TestCase
             $this->markTestSkipped(self::MISSING_API_KEY);
         }
 
-        $provider = new GeocodioProvider($this->getAdapter(), $api_key);
-        $result   = $provider->getReversedData(array(37.331551291667, -122.03057125));
+        $provider = new Geocodio($this->getAdapter(), $api_key);
+        $result   = $provider->reverse(array(37.331551291667, -122.03057125));
 
         $this->assertInternalType('array', $result);
 

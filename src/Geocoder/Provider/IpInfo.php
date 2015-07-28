@@ -16,7 +16,7 @@ use Geocoder\Exception\NoResultException;
 /**
  * @author Antoine Corcy <contact@sbin.dk>
  */
-class IpInfoProvider extends AbstractProvider implements ProviderInterface
+class IpInfo extends AbstractProvider implements Geocoder
 {
     /**
      * @var string
