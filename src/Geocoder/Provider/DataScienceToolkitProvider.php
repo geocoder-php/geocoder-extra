@@ -10,13 +10,13 @@
 
 namespace Geocoder\Provider;
 
-use Geocoder\Exception\NoResultException;
-use Geocoder\Exception\UnsupportedException;
+use Geocoder\Exception\NoResult;
+use Geocoder\Exception\UnsupportedOperation;
 
 /**
  * @author Nicolas Chaulet <nchaulet.fr@gmail.com>
  */
-class DataScienceToolkitProvider extends AbstractProvider implements ProviderInterface
+class DataScienceToolkitProvider extends AbstractHttpProvider implements Provider
 {
     /**
      * @var string
@@ -31,14 +31,14 @@ class DataScienceToolkitProvider extends AbstractProvider implements ProviderInt
     /**
      * {@inheritDoc}
      */
-    public function getGeocodedData($address)
+    public function geocode($address)
     {
         if (empty($address)) {
-            throw new UnsupportedException('The DataScienceToolkitProvider does not support empty addresses.');
+            throw new UnsupportedOperation('The DataScienceToolkit provider does not support empty addresses.');
         }
 
         if (filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-            throw new UnsupportedException('The DataScienceToolkitProvider does not support IPv6 addresses.');
+            throw new UnsupportedOperation('The DataScienceToolkit provider does not support IPv6 addresses.');
         }
 
         $endpoint = filter_var($address, FILTER_VALIDATE_IP) ? self::ENDPOINT_IP_URL : self::ENDPOINT_ADRESS_URL;
@@ -55,9 +55,9 @@ class DataScienceToolkitProvider extends AbstractProvider implements ProviderInt
     /**
      * {@inheritDoc}
      */
-    public function getReversedData(array $coordinates)
+    public function reverse($latitude, $longitude)
     {
-        throw new UnsupportedException('The DataScienceToolkitProvider is not able to do reverse geocoding.');
+        throw new UnsupportedOperation('The DataScienceToolkit provider is not able to do reverse geocoding.');
     }
 
     /**
@@ -75,11 +75,11 @@ class DataScienceToolkitProvider extends AbstractProvider implements ProviderInt
      */
     protected function executeQuery($query)
     {
-        $content = $this->getAdapter()->getContent($query);
+        $content = (string) $this->getAdapter()->get($query)->getBody();
         $result  = json_decode($content, true);
 
         if (!$result) {
-            throw new NoResultException(sprintf('Could not execute query %s', $query));
+            throw new NoResult(sprintf('Could not execute query %s', $query));
         }
 
         $result = array_shift($result);

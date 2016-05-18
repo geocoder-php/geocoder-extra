@@ -14,39 +14,39 @@ class DataScienceToolkitProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The DataScienceToolkitProvider does not support empty addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The DataScienceToolkit provider does not support empty addresses.
      */
-    public function testGetGeocodedDataWithNull()
+    public function testGeocodeWithNull()
     {
         $provider = new DataScienceToolkitProvider($this->getMockAdapter($this->never()));
-        $provider->getGeocodedData(null);
+        $provider->geocode(null);
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The DataScienceToolkitProvider does not support empty addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The DataScienceToolkit provider does not support empty addresses.
      */
-    public function testGetGeocodedDataWithEmpty()
+    public function testGeocodeWithEmpty()
     {
         $provider = new DataScienceToolkitProvider($this->getMockAdapter($this->never()));
-        $provider->getGeocodedData('');
+        $provider->geocode('');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://www.datasciencetoolkit.org/street2coordinates/10+rue+de+baraban+lyon
      */
-    public function testGetGeocodedDataWithFrenchAddress()
+    public function testGeocodeWithFrenchAddress()
     {
         $provider = new DataScienceToolkitProvider($this->getMockAdapterReturns(null));
-        $provider->getGeocodedData('10 rue de baraban lyon');
+        $provider->geocode('10 rue de baraban lyon');
     }
 
-    public function testGetGeocodedDataWithLocalhostIPv4()
+    public function testGeocodeWithLocalhostIPv4()
     {
         $provider = new DataScienceToolkitProvider($this->getMockAdapter($this->never()));
-        $result   = $provider->getGeocodedData('127.0.0.1');
+        $result   = $provider->geocode('127.0.0.1');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -57,47 +57,48 @@ class DataScienceToolkitProviderTest extends TestCase
         $this->assertArrayNotHasKey('longitude', $result);
         $this->assertArrayNotHasKey('zipcode', $result);
         $this->assertArrayNotHasKey('timezone', $result);
+        $this->assertArrayNotHasKey('city', $result);
+        $this->assertArrayNotHasKey('region', $result);
+        $this->assertArrayNotHasKey('county', $result);
 
-        $this->assertEquals('localhost', $result['city']);
-        $this->assertEquals('localhost', $result['region']);
-        $this->assertEquals('localhost', $result['county']);
+        $this->assertEquals('localhost', $result['locality']);
         $this->assertEquals('localhost', $result['country']);
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://www.datasciencetoolkit.org/ip2coordinates/81.220.239.218
      */
-    public function testGetGeocodedDataWithRealIPv4GetsNullContent()
+    public function testGeocodeWithRealIPv4GetsNullContent()
     {
         $provider = new DataScienceToolkitProvider($this->getMockAdapterReturns(null));
-        $provider->getGeocodedData('81.220.239.218');
+        $provider->geocode('81.220.239.218');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://www.datasciencetoolkit.org/ip2coordinates/81.220.239.218
      */
-    public function testGetGeocodedDataWithRealIPv4GetsEmptyContent()
+    public function testGeocodeWithRealIPv4GetsEmptyContent()
     {
         $provider = new DataScienceToolkitProvider($this->getMockAdapterReturns(''));
-        $provider->getGeocodedData('81.220.239.218');
+        $provider->geocode('81.220.239.218');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The DataScienceToolkitProvider does not support IPv6 addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The DataScienceToolkit provider does not support IPv6 addresses.
      */
-    public function testGetGeocodedDataWithRealIPv6()
+    public function testGeocodeWithRealIPv6()
     {
         $provider = new DataScienceToolkitProvider($this->getAdapter());
-        $result = $provider->getGeocodedData('::ffff:88.188.221.14');
+        $result = $provider->geocode('::ffff:88.188.221.14');
     }
 
-    public function testGetGeocodedDataWithRealIPv4()
+    public function testGeocodeWithRealIPv4()
     {
         $provider = new DataScienceToolkitProvider($this->getAdapter());
-        $result   = $provider->getGeocodedData('81.220.239.218');
+        $result   = $provider->geocode('81.220.239.218');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -111,10 +112,10 @@ class DataScienceToolkitProviderTest extends TestCase
         $this->assertEquals('FR', $result['countryCode']);
     }
 
-    public function testGetGeocodedDataWithRealAdress()
+    public function testGeocodeWithRealAdress()
     {
         $provider = new DataScienceToolkitProvider($this->getAdapter());
-        $result   = $provider->getGeocodedData('2543 Graystone Place, Simi Valley, CA 93065');
+        $result   = $provider->geocode('2543 Graystone Place, Simi Valley, CA 93065');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -129,12 +130,12 @@ class DataScienceToolkitProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The DataScienceToolkitProvider is not able to do reverse geocoding.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The DataScienceToolkit provider is not able to do reverse geocoding.
      */
-    public function testGetReverseData()
+    public function testReverse()
     {
         $provider = new DataScienceToolkitProvider($this->getMockAdapter($this->never()));
-        $provider->getReversedData(array(1, 2));
+        $provider->reverse(1, 2);
     }
 }
