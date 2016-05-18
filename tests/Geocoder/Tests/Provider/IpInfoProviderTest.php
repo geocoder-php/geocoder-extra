@@ -14,39 +14,39 @@ class IpInfoProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The IpInfoProvider does not support Street addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The IpInfo provider does not support Street addresses.
      */
-    public function testGetGeocodedDataWithNull()
+    public function testGeocodeWithNull()
     {
         $provider = new IpInfoProvider($this->getMockAdapter($this->never()));
-        $provider->getGeocodedData(null);
+        $provider->geocode(null);
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The IpInfoProvider does not support Street addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The IpInfo provider does not support Street addresses.
      */
-    public function testGetGeocodedDataWithEmpty()
+    public function testGeocodeWithEmpty()
     {
         $provider = new IpInfoProvider($this->getMockAdapter($this->never()));
-        $provider->getGeocodedData('');
+        $provider->geocode('');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The IpInfoProvider does not support Street addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The IpInfo provider does not support Street addresses.
      */
-    public function testGetGeocodedDataWithAddress()
+    public function testGeocodeWithAddress()
     {
         $provider = new IpInfoProvider($this->getMockAdapter($this->never()));
-        $provider->getGeocodedData('10 avenue Gambetta, Paris, France');
+        $provider->geocode('10 avenue Gambetta, Paris, France');
     }
 
-    public function testGetGeocodedDataWithLocalhostIPv4()
+    public function testGeocodeWithLocalhostIPv4()
     {
         $provider = new IpInfoProvider($this->getMockAdapter($this->never()));
-        $result = $provider->getGeocodedData('127.0.0.1');
+        $result = $provider->geocode('127.0.0.1');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -57,17 +57,18 @@ class IpInfoProviderTest extends TestCase
         $this->assertArrayNotHasKey('longitude', $result);
         $this->assertArrayNotHasKey('zipcode', $result);
         $this->assertArrayNotHasKey('timezone', $result);
+        $this->assertArrayNotHasKey('city', $result);
+        $this->assertArrayNotHasKey('region', $result);
+        $this->assertArrayNotHasKey('county', $result);
 
-        $this->assertEquals('localhost', $result['city']);
-        $this->assertEquals('localhost', $result['region']);
-        $this->assertEquals('localhost', $result['county']);
+        $this->assertEquals('localhost', $result['locality']);
         $this->assertEquals('localhost', $result['country']);
     }
 
-    public function testGetGeocodedDataWithLocalhostIPv6()
+    public function testGeocodeWithLocalhostIPv6()
     {
         $provider = new IpInfoProvider($this->getMockAdapter($this->never()));
-        $result = $provider->getGeocodedData('::1');
+        $result = $provider->geocode('::1');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -78,34 +79,35 @@ class IpInfoProviderTest extends TestCase
         $this->assertArrayNotHasKey('longitude', $result);
         $this->assertArrayNotHasKey('zipcode', $result);
         $this->assertArrayNotHasKey('timezone', $result);
+        $this->assertArrayNotHasKey('city', $result);
+        $this->assertArrayNotHasKey('region', $result);
+        $this->assertArrayNotHasKey('county', $result);
 
-        $this->assertEquals('localhost', $result['city']);
-        $this->assertEquals('localhost', $result['region']);
-        $this->assertEquals('localhost', $result['county']);
+        $this->assertEquals('localhost', $result['locality']);
         $this->assertEquals('localhost', $result['country']);
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://ipinfo.io/74.200.247.59/json
      */
-    public function testGetGeocodedDataWithRealIPv4GetsNullContent()
+    public function testGeocodeWithRealIPv4GetsNullContent()
     {
         $provider = new IpInfoProvider($this->getMockAdapterReturns(null));
-        $provider->getGeocodedData('74.200.247.59');
+        $provider->geocode('74.200.247.59');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://ipinfo.io/74.200.247.59/json
      */
-    public function testGetGeocodedDataWithRealIPv4GetsEmptyContent()
+    public function testGeocodeWithRealIPv4GetsEmptyContent()
     {
         $provider = new IpInfoProvider($this->getMockAdapterReturns(''));
-        $provider->getGeocodedData('74.200.247.59');
+        $provider->geocode('74.200.247.59');
     }
 
-    public function testGetGeocodedDataWithRealIPv4()
+    public function testGeocodeWithRealIPv4()
     {
         $json = <<<JSON
 {
@@ -121,7 +123,7 @@ class IpInfoProviderTest extends TestCase
 JSON;
 
         $provider = new IpInfoProvider($this->getMockAdapterReturns($json));
-        $result = $provider->getGeocodedData('74.200.247.59');
+        $result = $provider->geocode('74.200.247.59');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -136,7 +138,7 @@ JSON;
         $this->assertEquals('US', $result['countryCode']);
     }
 
-    public function testGetGeocodedDataWithRealIPv6()
+    public function testGeocodeWithRealIPv6()
     {
         $json = <<<JSON
 {
@@ -152,7 +154,7 @@ JSON;
 JSON;
 
         $provider = new IpInfoProvider($this->getMockAdapterReturns($json));
-        $result = $provider->getGeocodedData('::ffff:74.200.247.59');
+        $result = $provider->geocode('::ffff:74.200.247.59');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -168,10 +170,10 @@ JSON;
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://ipinfo.io/255.255.255.255/json
      */
-    public function testGetGeocodedDataWithoutLocation()
+    public function testGeocodeWithoutLocation()
     {
         $json = <<<JSON
 {
@@ -183,26 +185,26 @@ JSON;
 JSON;
 
         $provider = new IpInfoProvider($this->getMockAdapterReturns($json));
-        $provider->getGeocodedData('255.255.255.255');
+        $provider->geocode('255.255.255.255');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://ipinfo.io/::ffff:74.200.247.59/json
      */
-    public function testGetGeocodedDataWithRealIPv6GetsNullContent()
+    public function testGeocodeWithRealIPv6GetsNullContent()
     {
         $provider = new IpInfoProvider($this->getMockAdapterReturns(null));
-        $provider->getGeocodedData('::ffff:74.200.247.59');
+        $provider->geocode('::ffff:74.200.247.59');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The IpInfoProvider is not able to do reverse geocoding.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The IpInfo provider is not able to do reverse geocoding.
      */
-    public function testGetReverseData()
+    public function testReverse()
     {
         $provider = new IpInfoProvider($this->getMockAdapter($this->never()));
-        $provider->getReversedData(array(1, 2));
+        $provider->reverse(1, 2);
     }
 }
