@@ -23,12 +23,12 @@ class BaiduProvider extends AbstractProvider implements ProviderInterface
     /**
      * @var string
      */
-    const GEOCODE_ENDPOINT_URL = 'http://api.map.baidu.com/geocoder?output=json&key=%s&address=%s';
+    const GEOCODE_ENDPOINT_URL = 'http://api.map.baidu.com/geocoder/v2/?output=json&pois=0&ak=%s&address=%s';
 
     /**
      * @var string
      */
-    const REVERSE_ENDPOINT_URL = 'http://api.map.baidu.com/geocoder?output=json&key=%s&location=%F,%F';
+    const REVERSE_ENDPOINT_URL = 'http://api.map.baidu.com/geocoder/v2/?output=json&pois=0&ak=%s&location=%F,%F';
 
     /**
      * @var string
