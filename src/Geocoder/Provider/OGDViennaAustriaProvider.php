@@ -10,15 +10,15 @@
 
 namespace Geocoder\Provider;
 
-use Geocoder\Exception\UnsupportedException;
-use Geocoder\Exception\NoResultException;
+use Geocoder\Exception\UnsupportedOperation;
+use Geocoder\Exception\NoResult;
 
 /**
  * Data source: City of Vienna, http://data.wien.gv.at
  *
  * @author Robert Harm <www.harm.co.at>
  */
-class OGDViennaAustriaProvider extends AbstractProvider implements ProviderInterface
+class OGDViennaAustriaProvider extends AbstractHttpProvider implements Provider
 {
     /**
      * @var string
@@ -28,11 +28,11 @@ class OGDViennaAustriaProvider extends AbstractProvider implements ProviderInter
     /**
      * {@inheritDoc}
      */
-    public function getGeocodedData($address)
+    public function geocode($address)
     {
         // This API doesn't handle IPs
         if (filter_var($address, FILTER_VALIDATE_IP)) {
-            throw new UnsupportedException('The OGDViennaAustriaProvider does not support IP addresses.');
+            throw new UnsupportedOperation('The OGDViennaAustria provider does not support IP addresses.');
         }
 
         $query = sprintf(self::ENDPOINT_URL, urlencode($address));
@@ -43,9 +43,9 @@ class OGDViennaAustriaProvider extends AbstractProvider implements ProviderInter
     /**
      * {@inheritDoc}
      */
-    public function getReversedData(array $coordinates)
+    public function reverse($latitude, $longitude)
     {
-        throw new UnsupportedException('The OGDViennaAustriaProvider is not able to do reverse geocoding.');
+        throw new UnsupportedOperation('The OGDViennaAustria provider is not able to do reverse geocoding.');
     }
 
     /**
@@ -63,16 +63,16 @@ class OGDViennaAustriaProvider extends AbstractProvider implements ProviderInter
      */
     protected function executeQuery($query)
     {
-        $content = $this->getAdapter()->getContent($query);
+        $content = (string) $this->getAdapter()->get($query)->getBody();
 
         if (empty($content)) {
-            throw new NoResultException(sprintf('Could not execute query %s', $query));
+            throw new NoResult(sprintf('Could not execute query %s', $query));
         }
 
         $data = json_decode($content, true);
 
         if (empty($data) || false === $data) {
-            throw new NoResultException(sprintf('Could not execute query %s', $query));
+            throw new NoResult(sprintf('Could not execute query %s', $query));
         }
 
         $bounds = array(

@@ -10,15 +10,15 @@
 
 namespace Geocoder\Provider;
 
-use Geocoder\HttpAdapter\HttpAdapterInterface;
-use Geocoder\Exception\UnsupportedException;
-use Geocoder\Exception\InvalidCredentialsException;
-use Geocoder\Exception\NoResultException;
+use Geocoder\Exception\UnsupportedOperation;
+use Geocoder\Exception\InvalidCredentials;
+use Geocoder\Exception\NoResult;
+use Ivory\HttpAdapter\HttpAdapterInterface;
 
 /**
  * @author Antoine Corcy <contact@sbin.dk>
  */
-class IGNOpenLSProvider extends AbstractProvider implements ProviderInterface
+class IGNOpenLSProvider extends AbstractHttpProvider implements Provider
 {
     /**
      * @var string
@@ -49,32 +49,32 @@ class IGNOpenLSProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function getGeocodedData($address)
+    public function geocode($address)
     {
         if (null === $this->apiKey) {
-            throw new InvalidCredentialsException('No API Key provided');
+            throw new InvalidCredentials('No API Key provided');
         }
 
         // This API doesn't handle IPs
         if (filter_var($address, FILTER_VALIDATE_IP)) {
-            throw new UnsupportedException('The IGNOpenLSProvider does not support IP addresses.');
+            throw new UnsupportedOperation('The IGNOpenLS provider does not support IP addresses.');
         }
 
         $query   = sprintf('%s%s',
             sprintf(self::ENDPOINT_URL, $this->apiKey),
-            urlencode(sprintf(self::ENDPOINT_QUERY, $this->getMaxResults(), $address))
+            urlencode(sprintf(self::ENDPOINT_QUERY, $this->getLimit(), $address))
         );
-        $content = $this->getAdapter()->getContent($query);
+        $content = (string) $this->getAdapter()->get($query)->getBody();
 
         $doc = new \DOMDocument;
         if (!@$doc->loadXML($content)) {
-            throw new NoResultException(sprintf('Could not execute query %s', $query));
+            throw new NoResult(sprintf('Could not execute query %s', $query));
         }
 
         $xml = new \SimpleXMLElement($content);
 
         if (isset($xml->ErrorList->Error) || null === $xml->Response->GeocodeResponse) {
-            throw new NoResultException(sprintf('Could not execute query %s', $query));
+            throw new NoResult(sprintf('Could not execute query %s', $query));
         }
 
         $numberOfGeocodedAddresses = (int) $xml->Response
@@ -82,7 +82,7 @@ class IGNOpenLSProvider extends AbstractProvider implements ProviderInterface
             ->GeocodeResponseList['numberOfGeocodedAddresses'];
 
         if (isset($numberOfGeocodedAddresses) && 0 === $numberOfGeocodedAddresses) {
-            throw new NoResultException(sprintf('Could not execute query %s', $query));
+            throw new NoResult(sprintf('Could not execute query %s', $query));
         }
 
         $results = array();
@@ -125,9 +125,9 @@ class IGNOpenLSProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function getReversedData(array $coordinates)
+    public function reverse($latitude, $longitude)
     {
-        throw new UnsupportedException('The IGNOpenLSProvider is not able to do reverse geocoding.');
+        throw new UnsupportedOperation('The IGNOpenLS provider is not able to do reverse geocoding.');
     }
 
     /**

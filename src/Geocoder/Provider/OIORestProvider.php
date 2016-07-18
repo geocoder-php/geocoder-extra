@@ -10,13 +10,13 @@
 
 namespace Geocoder\Provider;
 
-use Geocoder\Exception\UnsupportedException;
-use Geocoder\Exception\NoResultException;
+use Geocoder\Exception\UnsupportedOperation;
+use Geocoder\Exception\NoResult;
 
 /**
  * @author Antoine Corcy <contact@sbin.dk>
  */
-class OIORestProvider extends AbstractProvider implements ProviderInterface
+class OIORestProvider extends AbstractHttpProvider implements Provider
 {
     /**
      * @var string
@@ -31,11 +31,11 @@ class OIORestProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function getGeocodedData($address)
+    public function geocode($address)
     {
         // This API doesn't handle IPs
         if (filter_var($address, FILTER_VALIDATE_IP)) {
-            throw new UnsupportedException('The OIORestProvider does not support IP addresses.');
+            throw new UnsupportedOperation('The OIORest provider does not support IP addresses.');
         }
 
         $address = rawurlencode($address);
@@ -56,9 +56,9 @@ class OIORestProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function getReversedData(array $coordinates)
+    public function reverse($latitude, $longitude)
     {
-        $query = sprintf(self::REVERSE_ENDPOINT_URL, $coordinates[0], $coordinates[1]);
+        $query = sprintf(self::REVERSE_ENDPOINT_URL, $latitude, $longitude);
 
         $data = $this->executeQuery($query);
 
@@ -80,16 +80,16 @@ class OIORestProvider extends AbstractProvider implements ProviderInterface
      */
     protected function executeQuery($query)
     {
-        $content = $this->getAdapter()->getContent($query);
+        $content = (string) $this->getAdapter()->get($query)->getBody();
 
         if (null === $content) {
-            throw new NoResultException(sprintf('Could not execute query %s', $query));
+            throw new NoResult(sprintf('Could not execute query %s', $query));
         }
 
         $data = (array) json_decode($content, true);
 
         if (empty($data) || false === $data) {
-            throw new NoResultException(sprintf('Could not execute query %s', $query));
+            throw new NoResult(sprintf('Could not execute query %s', $query));
         }
 
         return $data;

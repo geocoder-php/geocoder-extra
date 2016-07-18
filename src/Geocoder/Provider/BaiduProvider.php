@@ -10,15 +10,15 @@
 
 namespace Geocoder\Provider;
 
-use Geocoder\HttpAdapter\HttpAdapterInterface;
-use Geocoder\Exception\InvalidCredentialsException;
-use Geocoder\Exception\NoResultException;
-use Geocoder\Exception\UnsupportedException;
+use Geocoder\Exception\InvalidCredentials;
+use Geocoder\Exception\NoResult;
+use Geocoder\Exception\UnsupportedOperation;
+use Ivory\HttpAdapter\HttpAdapterInterface;
 
 /**
  * @author Antoine Corcy <contact@sbin.dk>
  */
-class BaiduProvider extends AbstractProvider implements ProviderInterface
+class BaiduProvider extends AbstractHttpProvider implements Provider
 {
     /**
      * @var string
@@ -49,15 +49,15 @@ class BaiduProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function getGeocodedData($address)
+    public function geocode($address)
     {
         if (null === $this->apiKey) {
-            throw new InvalidCredentialsException('No API Key provided');
+            throw new InvalidCredentials('No API Key provided');
         }
 
         // This API doesn't handle IPs
         if (filter_var($address, FILTER_VALIDATE_IP)) {
-            throw new UnsupportedException('The BaiduProvider does not support IP addresses.');
+            throw new UnsupportedOperation('The Baidu provider does not support IP addresses.');
         }
 
         $query = sprintf(self::GEOCODE_ENDPOINT_URL, $this->apiKey, rawurlencode($address));
@@ -68,13 +68,13 @@ class BaiduProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function getReversedData(array $coordinates)
+    public function reverse($latitude, $longitude)
     {
         if (null === $this->apiKey) {
-            throw new InvalidCredentialsException('No API Key provided');
+            throw new InvalidCredentials('No API Key provided');
         }
 
-        $query = sprintf(self::REVERSE_ENDPOINT_URL, $this->apiKey, $coordinates[0], $coordinates[1]);
+        $query = sprintf(self::REVERSE_ENDPOINT_URL, $this->apiKey, $latitude, $longitude);
 
         return $this->executeQuery($query);
     }
@@ -94,20 +94,20 @@ class BaiduProvider extends AbstractProvider implements ProviderInterface
      */
     protected function executeQuery($query)
     {
-        $content = $this->getAdapter()->getContent($query);
+        $content = (string) $this->getAdapter()->get($query)->getBody();
 
         if (null === $content) {
-            throw new NoResultException(sprintf('Could not execute query %s', $query));
+            throw new NoResult(sprintf('Could not execute query %s', $query));
         }
 
         $data = (array) json_decode($content, true);
 
         if (empty($data) || false === $data) {
-            throw new NoResultException(sprintf('Could not execute query %s', $query));
+            throw new NoResult(sprintf('Could not execute query %s', $query));
         }
 
         if ('INVALID_KEY' === $data['status']) {
-            throw new InvalidCredentialsException('API Key provided is not valid.');
+            throw new InvalidCredentials('API Key provided is not valid.');
         }
 
         return array(array_merge($this->getDefaults(), array(

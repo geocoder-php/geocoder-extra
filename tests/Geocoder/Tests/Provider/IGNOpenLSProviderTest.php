@@ -16,57 +16,57 @@ class IGNOpenLSProviderTest extends TestCase
     /**
      * @expectedException \RuntimeException
      */
-    public function testGetGeocodedDataWithNullApiKey()
+    public function testGeocodeWithNullApiKey()
     {
         $provider = new IGNOpenLSProvider($this->getMockAdapter($this->never()), null);
-        $provider->getGeocodedData('foo');
+        $provider->geocode('foo');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://gpp3-wxs.ign.fr/api_key/geoportail/ols?output=xml&xls=%3Cxls%3AXLS+xmlns%3Axls%3D%22http%3A%2F%2Fwww.opengis.net%2Fxls%22+version%3D%221.2%22%3E%3Cxls%3ARequestHeader%2F%3E%3Cxls%3ARequest+methodName%3D%22LocationUtilityService%22+version%3D%221.2%22+maximumResponses%3D%225%22%3E%3Cxls%3AGeocodeRequest+returnFreeForm%3D%22false%22%3E%3Cxls%3AAddress+countryCode%3D%22StreetAddress%22%3E%3Cxls%3AfreeFormAddress%3Efoobar%3C%2Fxls%3AfreeFormAddress%3E%3C%2Fxls%3AAddress%3E%3C%2Fxls%3AGeocodeRequest%3E%3C%2Fxls%3ARequest%3E%3C%2Fxls%3AXLS%3E
      */
-    public function testGetGeocodedData()
+    public function testGeocode()
     {
         $provider = new IGNOpenLSProvider($this->getMockAdapter(), 'api_key');
-        $provider->getGeocodedData('foobar');
+        $provider->geocode('foobar');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://gpp3-wxs.ign.fr/api_key/geoportail/ols?output=xml&xls=%3Cxls%3AXLS+xmlns%3Axls%3D%22http%3A%2F%2Fwww.opengis.net%2Fxls%22+version%3D%221.2%22%3E%3Cxls%3ARequestHeader%2F%3E%3Cxls%3ARequest+methodName%3D%22LocationUtilityService%22+version%3D%221.2%22+maximumResponses%3D%225%22%3E%3Cxls%3AGeocodeRequest+returnFreeForm%3D%22false%22%3E%3Cxls%3AAddress+countryCode%3D%22StreetAddress%22%3E%3Cxls%3AfreeFormAddress%3E%3C%2Fxls%3AfreeFormAddress%3E%3C%2Fxls%3AAddress%3E%3C%2Fxls%3AGeocodeRequest%3E%3C%2Fxls%3ARequest%3E%3C%2Fxls%3AXLS%3E
      */
-    public function testGetGeocodedDataWithNull()
+    public function testGeocodeWithNull()
     {
         $provider = new IGNOpenLSProvider($this->getMockAdapter(), 'api_key');
-        $provider->getGeocodedData(null);
+        $provider->geocode(null);
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://gpp3-wxs.ign.fr/api_key/geoportail/ols?output=xml&xls=%3Cxls%3AXLS+xmlns%3Axls%3D%22http%3A%2F%2Fwww.opengis.net%2Fxls%22+version%3D%221.2%22%3E%3Cxls%3ARequestHeader%2F%3E%3Cxls%3ARequest+methodName%3D%22LocationUtilityService%22+version%3D%221.2%22+maximumResponses%3D%225%22%3E%3Cxls%3AGeocodeRequest+returnFreeForm%3D%22false%22%3E%3Cxls%3AAddress+countryCode%3D%22StreetAddress%22%3E%3Cxls%3AfreeFormAddress%3E%3C%2Fxls%3AfreeFormAddress%3E%3C%2Fxls%3AAddress%3E%3C%2Fxls%3AGeocodeRequest%3E%3C%2Fxls%3ARequest%3E%3C%2Fxls%3AXLS%3E
      */
-    public function testGetGeocodedDataWithEmpty()
+    public function testGeocodeWithEmpty()
     {
         $provider = new IGNOpenLSProvider($this->getMockAdapter(), 'api_key');
-        $provider->getGeocodedData('');
+        $provider->geocode('');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://gpp3-wxs.ign.fr/api_key/geoportail/ols?output=xml&xls=%3Cxls%3AXLS+xmlns%3Axls%3D%22http%3A%2F%2Fwww.opengis.net%2Fxls%22+version%3D%221.2%22%3E%3Cxls%3ARequestHeader%2F%3E%3Cxls%3ARequest+methodName%3D%22LocationUtilityService%22+version%3D%221.2%22+maximumResponses%3D%225%22%3E%3Cxls%3AGeocodeRequest+returnFreeForm%3D%22false%22%3E%3Cxls%3AAddress+countryCode%3D%22StreetAddress%22%3E%3Cxls%3AfreeFormAddress%3E36+Quai+des+Orf%C3%A8vres%2C+Paris%2C+France%3C%2Fxls%3AfreeFormAddress%3E%3C%2Fxls%3AAddress%3E%3C%2Fxls%3AGeocodeRequest%3E%3C%2Fxls%3ARequest%3E%3C%2Fxls%3AXLS%3E
      */
-    public function testGetGeocodedDataWithAddressGetsNullContent()
+    public function testGeocodeWithAddressGetsNullContent()
     {
         $provider = new IGNOpenLSProvider($this->getMockAdapterReturns(null), 'api_key');
-        $provider->getGeocodedData('36 Quai des Orfèvres, Paris, France');
+        $provider->geocode('36 Quai des Orfèvres, Paris, France');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedMessage Could not execute query http://gpp3-wxs.ign.fr/jqljhusfrcl0c3w1int0dzhd/geoportail/ols?output=xml&xls=%3Cxls%3AXLS+xmlns%3Axls%3D%22http%3A%2F%2Fwww.opengis.net%2Fxls%22+version%3D%221.2%22%3E%3Cxls%3ARequestHeader%2F%3E%3Cxls%3ARequest+methodName%3D%22LocationUtilityService%22+version%3D%221.2%22+maximumResponses%3D%225%22%3E%3Cxls%3AGeocodeRequest+returnFreeForm%3D%22false%22%3E%3Cxls%3AAddress+countryCode%3D%22StreetAddress%22%3E%3Cxls%3AfreeFormAddress%3Efoobar%3C%2Fxls%3AfreeFormAddress%3E%3C%2Fxls%3AAddress%3E%3C%2Fxls%3AGeocodeRequest%3E%3C%2Fxls%3ARequest%3E%3C%2Fxls%3AXLS%3E
      */
-    public function testGetGeocodedDataWithAddressGetsErrorContent()
+    public function testGeocodeWithAddressGetsErrorContent()
     {
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -81,10 +81,10 @@ class IGNOpenLSProviderTest extends TestCase
 XML;
 
         $provider = new IGNOpenLSProvider($this->getMockAdapterReturns($xml), 'api_key');
-        $provider->getGeocodedData('foobar');
+        $provider->geocode('foobar');
     }
 
-    public function testGetGeocodedDataReturnsMultipleResults()
+    public function testGeocodeReturnsMultipleResults()
     {
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -190,7 +190,7 @@ XML;
 XML;
 
         $provider = new IGNOpenLSProvider($this->getMockAdapterReturns($xml), 'api_key');
-        $results  = $provider->getGeocodedData('36 Quai des Orfèvres, 75001 Paris, France');
+        $results  = $provider->geocode('36 Quai des Orfèvres, 75001 Paris, France');
 
         $this->assertInternalType('array', $results);
         $this->assertCount(5, $results);
@@ -218,8 +218,8 @@ XML;
         $this->assertEquals('Europe/Paris', $results[0]['timezone']);
 
         // not provided
-        $this->assertNull($results[0]['region']);
-        $this->assertNull($results[0]['regionCode']);
+        $this->assertArrayNotHasKey('region', $results[0]);
+        $this->assertArrayNotHasKey('regionCode', $results[0]);
 
         $this->assertInternalType('array', $results[1]);
         $this->assertEquals(48.858515, $results[1]['latitude'], '', 0.01);
@@ -276,7 +276,7 @@ XML;
         $this->assertEquals('Paris', $results[4]['city']);
     }
 
-    public function testGetGeocodedDataReturnsSingleResult()
+    public function testGeocodeReturnsSingleResult()
     {
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -310,7 +310,7 @@ XML;
 XML;
 
         $provider = new IGNOpenLSProvider($this->getMockAdapterReturns($xml), 'api_key');
-        $results  = $provider->getGeocodedData('Rue Marconi 57000 Metz');
+        $results  = $provider->geocode('Rue Marconi 57000 Metz');
 
         $this->assertInternalType('array', $results);
         $this->assertCount(1, $results);
@@ -338,18 +338,18 @@ XML;
         $this->assertEquals('Europe/Paris', $result['timezone']);
 
         // not provided
-        $this->assertNull($result['region']);
-        $this->assertNull($result['regionCode']);
+        $this->assertArrayNotHasKey('region', $results[0]);
+        $this->assertArrayNotHasKey('regionCode', $results[0]);
     }
 
-    public function testGetGeocodedDataWithRealAddressReturnsMultipleResults()
+    public function testGeocodeWithRealAddressReturnsMultipleResults()
     {
         if (!isset($_SERVER['IGN_WEB_API_KEY'])) {
             $this->markTestSkipped('You need to configure the IGN_WEB_API_KEY value in phpunit.xml');
         }
 
         $provider = new IGNOpenLSProvider($this->getAdapter(), $_SERVER['IGN_WEB_API_KEY']);
-        $results  = $provider->getGeocodedData('36 Quai des Orfèvres, 75001 Paris, France');
+        $results  = $provider->geocode('36 Quai des Orfèvres, 75001 Paris, France');
 
         $this->assertInternalType('array', $results);
         $this->assertCount(5, $results);
@@ -435,14 +435,14 @@ XML;
         $this->assertEquals('Paris', $results[4]['city']);
     }
 
-    public function testGetGeocodedDataWithRealAddressReturnsSingleResult()
+    public function testGeocodeWithRealAddressReturnsSingleResult()
     {
         if (!isset($_SERVER['IGN_WEB_API_KEY'])) {
             $this->markTestSkipped('You need to configure the IGN_WEB_API_KEY value in phpunit.xml');
         }
 
         $provider = new IGNOpenLSProvider($this->getAdapter(), $_SERVER['IGN_WEB_API_KEY']);
-        $results  = $provider->getGeocodedData('Rue Marconi 57000 Metz');
+        $results  = $provider->geocode('Rue Marconi 57000 Metz');
 
         $this->assertInternalType('array', $results);
         $this->assertCount(1, $results);
@@ -475,52 +475,52 @@ XML;
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The IGNOpenLSProvider does not support IP addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The IGNOpenLS provider does not support IP addresses.
      */
-    public function testGetGeocodedDataWithLocalhostIPv4()
+    public function testGeocodeWithLocalhostIPv4()
     {
         $provider = new IGNOpenLSProvider($this->getMockAdapter($this->never()), 'api_key');
-        $provider->getGeocodedData('127.0.0.1');
+        $provider->geocode('127.0.0.1');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The IGNOpenLSProvider does not support IP addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The IGNOpenLS provider does not support IP addresses.
      */
-    public function testGetGeocodedDataWithLocalhostIPv6()
+    public function testGeocodeWithLocalhostIPv6()
     {
         $provider = new IGNOpenLSProvider($this->getMockAdapter($this->never()), 'api_key');
-        $provider->getGeocodedData('::1');
+        $provider->geocode('::1');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The IGNOpenLSProvider does not support IP addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The IGNOpenLS provider does not support IP addresses.
      */
-    public function testGetGeocodedDataWithIPv4()
+    public function testGeocodeWithIPv4()
     {
         $provider = new IGNOpenLSProvider($this->getAdapter(), 'api_key');
-        $provider->getGeocodedData('74.200.247.59');
+        $provider->geocode('74.200.247.59');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The IGNOpenLSProvider does not support IP addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The IGNOpenLS provider does not support IP addresses.
      */
-    public function testGetGeocodedDataWithIPv6()
+    public function testGeocodeWithIPv6()
     {
         $provider = new IGNOpenLSProvider($this->getAdapter(), 'api_key');
-        $provider->getGeocodedData('::ffff:74.200.247.59');
+        $provider->geocode('::ffff:74.200.247.59');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The IGNOpenLSProvider is not able to do reverse geocoding.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The IGNOpenLS provider is not able to do reverse geocoding.
      */
-    public function testGetReverseData()
+    public function testReverse()
     {
         $provider = new IGNOpenLSProvider($this->getMockAdapter($this->never()), 'api_key');
-        $provider->getReversedData(array(1, 2));
+        $provider->reverse(1, 2);
     }
 }

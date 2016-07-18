@@ -8,7 +8,7 @@ use Geocoder\Provider\OIORestProvider;
 /**
  * @author Antoine Corcy <contact@sbin.dk>
  */
-class OIORestProviderTest extends TestCase
+class OIORestTest extends TestCase
 {
     public function testGetName()
     {
@@ -17,49 +17,49 @@ class OIORestProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://geo.oiorest.dk/adresser.json?q=
      */
-    public function testGetGeocodedDataWithNull()
+    public function testGeocodeWithNull()
     {
         $provider = new OIORestProvider($this->getMockAdapter());
-        $provider->getGeocodedData(null);
+        $provider->geocode(null);
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://geo.oiorest.dk/adresser.json?q=
      */
-    public function testGetGeocodedDataWithEmpty()
+    public function testGeocodeWithEmpty()
     {
         $provider = new OIORestProvider($this->getMockAdapter());
-        $provider->getGeocodedData('');
+        $provider->geocode('');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://geo.oiorest.dk/adresser.json?q=Tagensvej%2047%2C%202200%20K%C3%B8benhavn%20N
      */
-    public function testGetGeocodedDataWithAddressContentReturnNull()
+    public function testGeocodeWithAddressContentReturnNull()
     {
         $provider = new OIORestProvider($this->getMockAdapterReturns(null));
-        $provider->getGeocodedData('Tagensvej 47, 2200 København N');
+        $provider->geocode('Tagensvej 47, 2200 København N');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://geo.oiorest.dk/adresser.json?q=Tagensvej%2047%2C%202200%20K%C3%B8benhavn%20N
      */
-    public function testGetGeocodedDataWithAddress()
+    public function testGeocodeWithAddress()
     {
         $provider = new OIORestProvider($this->getMockAdapter());
-        $provider->getGeocodedData('Tagensvej 47, 2200 København N');
+        $provider->geocode('Tagensvej 47, 2200 København N');
     }
 
-    public function testGetGeocodedDataWithRealAddress()
+    public function testGeocodeWithRealAddress()
     {
         $provider = new OIORestProvider($this->getAdapter());
-        $result   = $provider->getGeocodedData('Tagensvej 47 2200 København');
+        $result   = $provider->geocode('Tagensvej 47 2200 København');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -68,7 +68,7 @@ class OIORestProviderTest extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertEquals(55.6999, $result['latitude'], '', 0.0001);
         $this->assertEquals(12.5527, $result['longitude'], '', 0.0001);
-        $this->assertNull($result['bounds']);
+        $this->assertSame(array('south' => null, 'west' => null, 'north' => null, 'east' => null), $result['bounds']);
         $this->assertEquals(47, $result['streetNumber']);
         $this->assertEquals('Tagensvej', $result['streetName']);
         $this->assertEquals(2200, $result['zipcode']);
@@ -81,10 +81,10 @@ class OIORestProviderTest extends TestCase
         $this->assertEquals('Europe/Copenhagen', $result['timezone']);
     }
 
-    public function testGetGeocodedDataWithRealAddressAalborg()
+    public function testGeocodeWithRealAddressAalborg()
     {
         $provider = new OIORestProvider($this->getAdapter());
-        $result   = $provider->getGeocodedData('Lauritzens Plads 1 9000 Aalborg');
+        $result   = $provider->geocode('Lauritzens Plads 1 9000 Aalborg');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -93,7 +93,7 @@ class OIORestProviderTest extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertEquals(57.0489, $result['latitude'], '', 0.0001);
         $this->assertEquals(9.94566, $result['longitude'], '', 0.0001);
-        $this->assertNull($result['bounds']);
+        $this->assertSame(array('south' => null, 'west' => null, 'north' => null, 'east' => null), $result['bounds']);
         $this->assertEquals(1, $result['streetNumber']);
         $this->assertEquals('Lauritzens Plads', $result['streetName']);
         $this->assertEquals(9000, $result['zipcode']);
@@ -106,10 +106,10 @@ class OIORestProviderTest extends TestCase
         $this->assertEquals('Europe/Copenhagen', $result['timezone']);
     }
 
-    public function testGetGeocodedDataWithRealAddressAarhus()
+    public function testGeocodeWithRealAddressAarhus()
     {
         $provider = new OIORestProvider($this->getAdapter());
-        $result   = $provider->getGeocodedData('St.Blichers Vej 74 8210 AArhus');
+        $result   = $provider->geocode('St.Blichers Vej 74 8210 AArhus');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -118,7 +118,7 @@ class OIORestProviderTest extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertEquals(56.1623, $result['latitude'], '', 0.0001);
         $this->assertEquals(10.1501, $result['longitude'], '', 0.0001);
-        $this->assertNull($result['bounds']);
+        $this->assertSame(array('south' => null, 'west' => null, 'north' => null, 'east' => null), $result['bounds']);
         $this->assertEquals(74, $result['streetNumber']);
         $this->assertEquals('St.Blichers Vej', $result['streetName']);
         $this->assertEquals(8210, $result['zipcode']);
@@ -131,10 +131,10 @@ class OIORestProviderTest extends TestCase
         $this->assertEquals('Europe/Copenhagen', $result['timezone']);
     }
 
-    public function testGetGeocodedDataWithRealAddressCopenhagen()
+    public function testGeocodeWithRealAddressCopenhagen()
     {
         $provider = new OIORestProvider($this->getAdapter());
-        $result   = $provider->getGeocodedData('Århusgade 80 2100 København');
+        $result   = $provider->geocode('Århusgade 80 2100 København');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -143,7 +143,7 @@ class OIORestProviderTest extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertEquals(55.7063, $result['latitude'], '', 0.0001);
         $this->assertEquals(12.5837, $result['longitude'], '', 0.0001);
-        $this->assertNull($result['bounds']);
+        $this->assertSame(array('south' => null, 'west' => null, 'north' => null, 'east' => null), $result['bounds']);
         $this->assertEquals(80, $result['streetNumber']);
         $this->assertEquals('Århusgade', $result['streetName']);
         $this->assertEquals(2100, $result['zipcode']);
@@ -156,10 +156,10 @@ class OIORestProviderTest extends TestCase
         $this->assertEquals('Europe/Copenhagen', $result['timezone']);
     }
 
-    public function testGetGeocodedDataWithRealAddressOdense()
+    public function testGeocodeWithRealAddressOdense()
     {
         $provider = new OIORestProvider($this->getAdapter());
-        $result   = $provider->getGeocodedData('Hvenekildeløkken 255 5240 Odense');
+        $result   = $provider->geocode('Hvenekildeløkken 255 5240 Odense');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -168,7 +168,7 @@ class OIORestProviderTest extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertEquals(55.4221, $result['latitude'], '', 0.0001);
         $this->assertEquals(10.4588, $result['longitude'], '', 0.0001);
-        $this->assertNull($result['bounds']);
+        $this->assertSame(array('south' => null, 'west' => null, 'north' => null, 'east' => null), $result['bounds']);
         $this->assertEquals(255, $result['streetNumber']);
         $this->assertEquals('Hvenekildeløkken', $result['streetName']);
         $this->assertEquals(5240, $result['zipcode']);
@@ -181,10 +181,10 @@ class OIORestProviderTest extends TestCase
         $this->assertEquals('Europe/Copenhagen', $result['timezone']);
     }
 
-    public function testGetGeocodedDataWithRealAddressReturnsMultipleResults()
+    public function testGeocodeWithRealAddressReturnsMultipleResults()
     {
         $provider = new OIORestProvider($this->getAdapter());
-        $results  = $provider->getGeocodedData('Tagensvej 47');
+        $results  = $provider->geocode('Tagensvej 47');
 
         $this->assertInternalType('array', $results);
         $this->assertCount(10, $results);
@@ -192,7 +192,7 @@ class OIORestProviderTest extends TestCase
         $this->assertInternalType('array', $results[0]);
         $this->assertEquals(55.6999504950464, $results[0]['latitude'], '', 0.0001);
         $this->assertEquals(12.552780016775, $results[0]['longitude'], '', 0.0001);
-        $this->assertNull($results[0]['bounds']);
+        $this->assertSame(array('south' => null, 'west' => null, 'north' => null, 'east' => null), $results[0]['bounds']);
         $this->assertEquals(47, $results[0]['streetNumber']);
         $this->assertEquals('Tagensvej', $results[0]['streetName']);
         $this->assertEquals(2200, $results[0]['zipcode']);
@@ -287,79 +287,79 @@ class OIORestProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The OIORestProvider does not support IP addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The OIORest provider does not support IP addresses.
      */
-    public function testGetGeocodedDataWithLocalhostIPv4()
+    public function testGeocodeWithLocalhostIPv4()
     {
         $provider = new OIORestProvider($this->getMockAdapter($this->never()));
-        $provider->getGeocodedData('127.0.0.1');
+        $provider->geocode('127.0.0.1');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The OIORestProvider does not support IP addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The OIORest provider does not support IP addresses.
      */
-    public function testGetGeocodedDataWithLocalhostIPv6()
+    public function testGeocodeWithLocalhostIPv6()
     {
         $provider = new OIORestProvider($this->getMockAdapter($this->never()));
-        $provider->getGeocodedData('::1');
+        $provider->geocode('::1');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The OIORestProvider does not support IP addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The OIORest provider does not support IP addresses.
      */
-    public function testGetGeocodedDataWithIPv4()
+    public function testGeocodeWithIPv4()
     {
         $provider = new OIORestProvider($this->getAdapter());
-        $provider->getGeocodedData('74.200.247.59');
+        $provider->geocode('74.200.247.59');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
-     * @expectedExceptionMessage The OIORestProvider does not support IP addresses.
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
+     * @expectedExceptionMessage The OIORest provider does not support IP addresses.
      */
-    public function testGetGeocodedDataWithIPv6()
+    public function testGeocodeWithIPv6()
     {
         $provider = new OIORestProvider($this->getAdapter());
-        $provider->getGeocodedData('::ffff:74.200.247.59');
+        $provider->geocode('::ffff:74.200.247.59');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://geo.oiorest.dk/adresser/1.000000,2.000000.json
      */
-    public function testGetReverseData()
+    public function testReverse()
     {
         $provider = new OIORestProvider($this->getMockAdapter());
-        $provider->getReversedData(array(1, 2));
+        $provider->reverse(1, 2);
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://geo.oiorest.dk/adresser/60.453947,22.256784.json
      */
-    public function testGetReversedDataWithCoordinatesGetsNullContent()
+    public function testReverseWithCoordinatesGetsNullContent()
     {
         $provider = new OIORestProvider($this->getMockAdapterReturns(null));
-        $provider->getReversedData(array('60.4539471728726', '22.2567841926781'));
+        $provider->reverse('60.4539471728726', '22.2567841926781');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://geo.oiorest.dk/adresser/60.453947,22.256784.json
      */
-    public function testGetReversedDataWithCoordinatesGetsEmptyContent()
+    public function testReverseWithCoordinatesGetsEmptyContent()
     {
         $provider = new OIORestProvider($this->getMockAdapterReturns(''));
-        $provider->getReversedData(array('60.4539471728726', '22.2567841926781'));
+        $provider->reverse('60.4539471728726', '22.2567841926781');
     }
 
-    public function testGetGeocodedDataWithRealCoordinates()
+    public function testGeocodeWithRealCoordinates()
     {
         $provider = new OIORestProvider($this->getAdapter());
-        $result = $provider->getReversedData(array(56.5231, 10.0659));
+        $result = $provider->reverse(56.5231, 10.0659);
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -368,7 +368,7 @@ class OIORestProviderTest extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertEquals(56.521542795662, $result['latitude'], '', 0.0001);
         $this->assertEquals(10.0668558607917, $result['longitude'], '', 0.0001);
-        $this->assertNull($result['bounds']);
+        $this->assertSame(array('south' => null, 'west' => null, 'north' => null, 'east' => null), $result['bounds']);
         $this->assertEquals(11, $result['streetNumber']);
         $this->assertEquals('Stabelsvej', $result['streetName']);
         $this->assertEquals(8981, $result['zipcode']);
