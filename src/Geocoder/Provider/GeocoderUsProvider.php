@@ -64,11 +64,11 @@ class GeocoderUsProvider extends AbstractHttpProvider implements Provider
         $content = $this->getAdapter()->get($query)->getBody();
 
         $json = json_decode($content, true);
-        
+
         if (!empty($json['errors'])) {
             throw new NoResult(sprintf('Could not execute query: %s', $query));
         }
-        
+
         if (empty($json['result']) || empty($json['result']['addressMatches'])) {
             throw new NoResult(sprintf('Could not find results for given query: %s', $query));
         }

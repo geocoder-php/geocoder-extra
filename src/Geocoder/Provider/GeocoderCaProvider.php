@@ -129,7 +129,7 @@ class GeocoderCaProvider extends AbstractHttpProvider implements Provider
     }
 
     /**
-     * @param  string                      $query
+     * @param  string             $query
      * @throws InvalidCredentials
      * @throws QuotaExceeded
      * @throws NoResult

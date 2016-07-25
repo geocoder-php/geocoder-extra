@@ -8,7 +8,7 @@ use Geocoder\Provider\TelizeProvider;
 /**
  * @author Tudor Matei <tudor@tudormatei.com>
  */
-class TelizeBaseProviderTest extends TestCase
+class TelizeProviderTest extends TestCase
 {
     public function testGetName()
     {
