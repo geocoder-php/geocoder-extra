@@ -8,7 +8,7 @@ use Geocoder\Provider\TelizeProvider;
 /**
  * @author Tudor Matei <tudor@tudormatei.com>
  */
-class TelizeBaseProviderTest extends TestCase
+class TelizeProviderTest extends TestCase
 {
     public function testGetName()
     {
@@ -17,39 +17,39 @@ class TelizeBaseProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The TelizeProvider does not support street addresses.
      */
     public function testGetGeocodedDataWithNull()
     {
         $provider = new TelizeProvider($this->getMockAdapter($this->never()));
-        $provider->getGeocodedData(null);
+        $provider->geocode(null);
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The TelizeProvider does not support street addresses.
      */
     public function testGetGeocodedDataWithEmpty()
     {
         $provider = new TelizeProvider($this->getMockAdapter($this->never()));
-        $provider->getGeocodedData('');
+        $provider->geocode('');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The TelizeProvider does not support street addresses.
      */
     public function testGetGeocodedDataWithAddress()
     {
         $provider = new TelizeProvider($this->getMockAdapter($this->never()));
-        $provider->getGeocodedData('10 avenue Gambetta, Paris, France');
+        $provider->geocode('10 avenue Gambetta, Paris, France');
     }
 
     public function testGetGeocodedDataWithLocalhostIPv4()
     {
         $provider = new TelizeProvider($this->getMockAdapter($this->never()));
-        $result   = $provider->getGeocodedData('127.0.0.1');
+        $result   = $provider->geocode('127.0.0.1');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -70,7 +70,7 @@ class TelizeBaseProviderTest extends TestCase
     public function testGetGeocodedDataWithLocalhostIPv6()
     {
         $provider = new TelizeProvider($this->getMockAdapter($this->never()));
-        $result = $provider->getGeocodedData('::1');
+        $result = $provider->geocode('::1');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -89,29 +89,29 @@ class TelizeBaseProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://www.telize.com/geoip/88.188.221.14
      */
     public function testGetGeocodedDataWithRealIPv4GetsNullContent()
     {
         $provider = new TelizeProvider($this->getMockAdapterReturns(null));
-        $provider->getGeocodedData('88.188.221.14');
+        $provider->geocode('88.188.221.14');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://www.telize.com/geoip/88.188.221.14
      */
     public function testGetGeocodedDataWithRealIPv4GetsEmptyContent()
     {
         $provider = new TelizeProvider($this->getMockAdapterReturns(''));
-        $provider->getGeocodedData('88.188.221.14');
+        $provider->geocode('88.188.221.14');
     }
 
     public function testGetGeocodedDataWithRealIPv4UnitedStates()
     {
         $provider = new TelizeProvider($this->getAdapter());
-        $result   = $provider->getGeocodedData('74.200.247.59');
+        $result   = $provider->geocode('74.200.247.59');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -135,7 +135,7 @@ class TelizeBaseProviderTest extends TestCase
     public function testGetGeocodedDataWithRealIPv4France()
     {
         $provider = new TelizeProvider($this->getAdapter());
-        $result   = $provider->getGeocodedData('88.188.221.14');
+        $result   = $provider->geocode('88.188.221.14');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -159,7 +159,7 @@ class TelizeBaseProviderTest extends TestCase
     public function testGetGeocodedDataWithRealIPv6France()
     {
         $provider = new TelizeProvider($this->getAdapter());
-        $result   = $provider->getGeocodedData('::ffff:88.188.221.14');
+        $result   = $provider->geocode('::ffff:88.188.221.14');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -181,12 +181,12 @@ class TelizeBaseProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The TelizeProvider is not able to do reverse geocoding.
      */
     public function testGetReverseData()
     {
         $provider = new TelizeProvider($this->getMockAdapter($this->never()));
-        $provider->getReversedData(array(1, 2));
+        $provider->reverse(1, 2);
     }
 }

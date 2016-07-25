@@ -16,33 +16,33 @@ class GeocodioProviderTest extends TestCase
     }
 
     /**
-     * @expectedException Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not find results for given query: http://api.geocod.io/v1/geocode?q=foobar&api_key=9999
      */
     public function testGetGeocodedData()
     {
         $provider = new GeocodioProvider($this->getMockAdapter(), '9999');
-        $provider->getGeocodedData('foobar');
+        $provider->geocode('foobar');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query: http://api.geocod.io/v1/geocode?q=1+Infinite+Loop+Cupertino%2C+CA+95014&api_key=9999
      */
     public function testGetGeocodedDataWithAddressGetsNullContent()
     {
         $provider = new GeocodioProvider($this->getMockAdapterReturns(null), '9999');
-        $provider->getGeocodedData('1 Infinite Loop Cupertino, CA 95014');
+        $provider->geocode('1 Infinite Loop Cupertino, CA 95014');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\InvalidCredentialsException
+     * @expectedException \Geocoder\Exception\InvalidCredentials
      * @expectedExceptionMessage Invalid API Key
      */
     public function testGetGeocodedDataWithBadAPIKeyThrowsException()
     {
         $provider = new GeocodioProvider($this->getAdapter(), '9999');
-        $results  = $provider->getGeocodedData('1 Infinite Loop Cupertino, CA 95014');
+        $results  = $provider->geocode('1 Infinite Loop Cupertino, CA 95014');
     }
 
     public function testGetGeocodedDataWithRealAddress()
@@ -54,7 +54,7 @@ class GeocodioProviderTest extends TestCase
         }
 
         $provider = new GeocodioProvider($this->getAdapter(), $api_key);
-        $results  = $provider->getGeocodedData('1 Infinite Loop Cupertino, CA 95014');
+        $results  = $provider->geocode('1 Infinite Loop Cupertino, CA 95014');
 
         $this->assertInternalType('array', $results);
 
@@ -74,7 +74,7 @@ class GeocodioProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      */
     public function testGetReversedData()
     {
@@ -85,7 +85,7 @@ class GeocodioProviderTest extends TestCase
         }
 
         $provider = new GeocodioProvider($this->getMockAdapter(), $api_key);
-        $provider->getReversedData(array(1, 2));
+        $provider->reverse(1, 2);
     }
 
     public function testGetReversedDataWithRealCoordinates()
@@ -97,7 +97,7 @@ class GeocodioProviderTest extends TestCase
         }
 
         $provider = new GeocodioProvider($this->getAdapter(), $api_key);
-        $result   = $provider->getReversedData(array(37.331551291667, -122.03057125));
+        $result   = $provider->reverse(37.331551291667, -122.03057125);
 
         $this->assertInternalType('array', $result);
 

@@ -22,21 +22,21 @@ class NaverProviderTest extends TestCase
     public function testGetGeocodedDataWithNullApiKey()
     {
         $provider = new NaverProvider($this->getMockAdapter($this->never()), null);
-        $provider->getGeocodedData('foo');
+        $provider->geocode('foo');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://openapi.map.naver.com/api/geocode.php?key=api_key&encoding=utf-8&coord=latlng&query=%EC%84%9C%EC%9A%B8
      */
     public function testGetGeocodedDataWithAddress()
     {
         $provider = new NaverProvider($this->getMockAdapter(), 'api_key');
-        $provider->getGeocodedData('서울');
+        $provider->geocode('서울');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://openapi.map.naver.com/api/geocode.php?key=api_key&encoding=utf-8&coord=latlng&query=foobar
      */
     public function testGetGeocodedDataWithAddressGetsZeroResult()
@@ -46,7 +46,7 @@ class NaverProviderTest extends TestCase
 XML;
 
         $provider = new NaverProvider($this->getMockAdapterReturns($xml), 'api_key');
-        $provider->getGeocodedData('foobar');
+        $provider->geocode('foobar');
     }
 
     public function testGetGeocodedDataWithAddressGetsOneResult()
@@ -78,7 +78,7 @@ XML;
 XML;
 
         $provider = new NaverProvider($this->getMockAdapterReturns($xml), 'api_key');
-        $results  = $provider->getGeocodedData('경북 영천시 임고면 매호리 143-9번지');
+        $results  = $provider->geocode('경북 영천시 임고면 매호리 143-9번지');
 
         $this->assertInternalType('array', $results);
         $this->assertCount(1, $results);
@@ -87,7 +87,7 @@ XML;
         $this->assertInternalType('array', $result);
         $this->assertEquals(128.9675615, $result['latitude'], '', 0.01);
         $this->assertEquals(36.0062826, $result['longitude'], '', 0.01);
-        $this->assertNull($result['bounds']);
+        $this->assertSame(array('south' => null, 'west' => null, 'north' => null, 'east' => null), $result['bounds']);
 
         $this->assertEquals('143-9', $result['streetNumber']);
         $this->assertEquals('매호리', $result['streetName']);
@@ -110,7 +110,7 @@ XML;
         }
 
         $provider = new NaverProvider($this->getAdapter(), $_SERVER['NAVER_API_KEY']);
-        $results  = $provider->getGeocodedData('경북 영천시 임고면 매호리 143-9번지');
+        $results  = $provider->geocode('경북 영천시 임고면 매호리 143-9번지');
 
         $this->assertInternalType('array', $results);
         $this->assertCount(1, $results);
@@ -119,7 +119,7 @@ XML;
         $this->assertInternalType('array', $result);
         $this->assertEquals(128.9675615, $result['latitude'], '', 0.01);
         $this->assertEquals(36.0062826, $result['longitude'], '', 0.01);
-        $this->assertNull($result['bounds']);
+        $this->assertSame(array('south' => null, 'west' => null, 'north' => null, 'east' => null), $result['bounds']);
 
         $this->assertEquals('143-9', $result['streetNumber']);
         $this->assertEquals('매호리', $result['streetName']);
@@ -136,32 +136,32 @@ XML;
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The NaverProvider does not support IP addresses.
      */
     public function testGetGeocodedDataWithIPv4()
     {
         $provider = new NaverProvider($this->getAdapter(), 'api_key');
-        $provider->getGeocodedData('74.200.247.59');
+        $provider->geocode('74.200.247.59');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The NaverProvider does not support IP addresses.
      */
     public function testGetGeocodedDataWithIPv6()
     {
         $provider = new NaverProvider($this->getAdapter(), 'api_key');
-        $provider->getGeocodedData('::ffff:74.200.247.59');
+        $provider->geocode('::ffff:74.200.247.59');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The NaverProvider is not able to do reverse geocoding.
      */
     public function testGetReverseData()
     {
         $provider = new NaverProvider($this->getAdapter(), 'api_key');
-        $provider->getReversedData(array(1, 2));
+        $provider->reverse(1, 2);
     }
 }

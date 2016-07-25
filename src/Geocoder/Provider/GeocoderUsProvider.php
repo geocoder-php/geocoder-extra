@@ -10,27 +10,27 @@
 
 namespace Geocoder\Provider;
 
-use Geocoder\Exception\UnsupportedException;
-use Geocoder\Exception\NoResultException;
+use Geocoder\Exception\UnsupportedOperation;
+use Geocoder\Exception\NoResult;
 
 /**
  * @author Antoine Corcy <contact@sbin.dk>
  */
-class GeocoderUsProvider extends AbstractProvider implements ProviderInterface
+class GeocoderUsProvider extends AbstractHttpProvider implements Provider
 {
     /**
      * @var string
      */
-    const ENDPOINT_URL = 'http://geocoder.us/service/rest/?address=%s';
+    const ENDPOINT_URL = 'http://geocoding.geo.census.gov/geocoder/locations/onelineaddress?format=json&benchmark=Public_AR_Current&address=%s';
 
     /**
      * {@inheritDoc}
      */
-    public function getGeocodedData($address)
+    public function geocode($address)
     {
         // This API doesn't handle IPs
         if (filter_var($address, FILTER_VALIDATE_IP)) {
-            throw new UnsupportedException('The GeocoderUsProvider does not support IP addresses.');
+            throw new UnsupportedOperation('The GeocoderUsProvider does not support IP addresses.');
         }
 
         $query = sprintf(self::ENDPOINT_URL, urlencode($address));
@@ -41,9 +41,9 @@ class GeocoderUsProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function getReversedData(array $coordinates)
+    public function reverse($latitude, $longitude)
     {
-        throw new UnsupportedException('The GeocoderUsProvider is not able to do reverse geocoding.');
+        throw new UnsupportedOperation('The GeocoderUsProvider is not able to do reverse geocoding.');
     }
 
     /**
@@ -61,21 +61,25 @@ class GeocoderUsProvider extends AbstractProvider implements ProviderInterface
      */
     protected function executeQuery($query)
     {
-        $content = $this->getAdapter()->getContent($query);
+        $content = $this->getAdapter()->get($query)->getBody();
 
-        $doc = new \DOMDocument();
-        if (!@$doc->loadXML($content)) {
-            throw new NoResultException(sprintf('Could not execute query %s', $query));
+        $json = json_decode($content, true);
+
+        if (!empty($json['errors'])) {
+            throw new NoResult(sprintf('Could not execute query: %s', $query));
         }
 
-        $xpath = new \SimpleXMLElement($content);
-        $xpath->registerXPathNamespace('geo', 'http://www.w3.org/2003/01/geo/wgs84_pos#');
-        $lat  = $xpath->xpath('//geo:lat');
-        $long = $xpath->xpath('//geo:long');
+        if (empty($json['result']) || empty($json['result']['addressMatches'])) {
+            throw new NoResult(sprintf('Could not find results for given query: %s', $query));
+        }
 
         return array(array_merge($this->getDefaults(), array(
-            'latitude'  => isset($lat[0]) ? (double) $lat[0] : null,
-            'longitude' => isset($long[0]) ? (double) $long[0] : null,
+            'longitude'    => $json['result']['addressMatches'][0]['coordinates']['x'],
+            'latitude'     => $json['result']['addressMatches'][0]['coordinates']['y'],
+            'streetName'   => $json['result']['addressMatches'][0]['addressComponents']['streetName'],
+            'city'         => $json['result']['addressMatches'][0]['addressComponents']['city'],
+            'zipcode'      => $json['result']['addressMatches'][0]['addressComponents']['zip'],
+            'countryCode'  => 'US',
         )));
     }
 }
