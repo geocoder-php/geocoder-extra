@@ -10,8 +10,8 @@
 
 namespace Geocoder\Provider;
 
-use Geocoder\Exception\UnsupportedOperation;
 use Geocoder\Exception\NoResult;
+use Geocoder\Exception\UnsupportedOperation;
 
 /**
  * Data source: City of Vienna, http://data.wien.gv.at
@@ -24,6 +24,7 @@ class OGDViennaAustriaProvider extends AbstractHttpProvider implements Provider
      * @var string
      */
     const ENDPOINT_URL = 'http://data.wien.gv.at/daten/OGDAddressService.svc/GetAddressInfo?CRS=EPSG:4326&Address=%s';
+    const REVERSE_ENDPOINT_URL = 'https://data.wien.gv.at/daten/OGDAddressService.svc/ReverseGeocode?crs=EPSG:4326&location=%F,%F';
 
     /**
      * {@inheritDoc}
@@ -45,7 +46,9 @@ class OGDViennaAustriaProvider extends AbstractHttpProvider implements Provider
      */
     public function reverse($latitude, $longitude)
     {
-        throw new UnsupportedOperation('The OGDViennaAustria provider is not able to do reverse geocoding.');
+        $query = sprintf(self::REVERSE_ENDPOINT_URL, $longitude, $latitude);
+
+        return $this->executeQuery($query);
     }
 
     /**
@@ -75,6 +78,13 @@ class OGDViennaAustriaProvider extends AbstractHttpProvider implements Provider
             throw new NoResult(sprintf('Could not execute query %s', $query));
         }
 
+        if (isset($data['features'][0]['properties']['DistanceUnit'])
+            && $data['features'][0]['properties']['DistanceUnit'] == 'meter'
+            && $data['features'][0]['properties']['Distance'] > 1000
+        ) {
+            throw new NoResult(sprintf('Result distance to far away'));
+        }
+        
         $bounds = array(
             'south' => isset($data['features'][0]['bbox'][0]) ? $data['features'][0]['bbox'][0] : null,
             'west'  => isset($data['features'][0]['bbox'][1]) ? $data['features'][0]['bbox'][1] : null,
