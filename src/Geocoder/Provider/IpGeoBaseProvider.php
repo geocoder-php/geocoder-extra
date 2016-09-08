@@ -59,6 +59,8 @@ class IpGeoBaseProvider extends AbstractHttpProvider implements Provider
             'city'         => (string) $result->city,
             'region'       => (string) $result->region,
             'countryCode'  => (string) $result->country,
+            'zipcode'   => null,
+            'regionCode'   => null,
         )));
     }
 

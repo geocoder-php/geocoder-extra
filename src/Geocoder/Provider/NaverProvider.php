@@ -78,6 +78,7 @@ class NaverProvider extends AbstractHttpProvider implements Provider
                 ? trim((string) $result->item->addrdetail->sido->sigugun->dongmyun) : null,
             'streetNumber' => isset($result->item->addrdetail->sido->sigugun->dongmyun->rest)
                 ? (string) $result->item->addrdetail->sido->sigugun->dongmyun->rest : null,
+            'zipcode'      => null,
         )));
     }
 

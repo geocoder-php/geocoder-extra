@@ -10,9 +10,9 @@
 
 namespace Geocoder\Provider;
 
-use Geocoder\Exception\InvalidCredentials as InvalidCredentialsException;
-use Geocoder\Exception\NoResult as NoResultException;
-use Geocoder\Exception\UnsupportedOperation as UnsupportedException;
+use Geocoder\Exception\InvalidCredentials as InvalidCredentials;
+use Geocoder\Exception\NoResult as NoResult;
+use Geocoder\Exception\UnsupportedOperation as UnsupportedOperation;
 use Ivory\HttpAdapter\HttpAdapterInterface;
 
 /**
@@ -75,11 +75,11 @@ class HereProvider extends AbstractHttpProvider implements Provider, LocaleAware
     {
         // This API doesn't handle IPs
         if (filter_var($value, FILTER_VALIDATE_IP)) {
-            throw new UnsupportedException('The HereProvider does not support IP addresses.');
+            throw new UnsupportedOperation('The HereProvider does not support IP addresses.');
         }
 
         if (null === $this->appId || null === $this->appCode) {
-            throw new InvalidCredentialsException('No App ID or code provided.');
+            throw new InvalidCredentials('No App ID or code provided.');
         }
 
         $query = sprintf(
@@ -96,7 +96,7 @@ class HereProvider extends AbstractHttpProvider implements Provider, LocaleAware
     public function reverse($latitude, $longitude)
     {
         if (null === $this->appId || null === $this->appCode) {
-            throw new InvalidCredentialsException('No App ID or code provided.');
+            throw new InvalidCredentials('No App ID or code provided.');
         }
 
         $query = sprintf(
@@ -118,19 +118,19 @@ class HereProvider extends AbstractHttpProvider implements Provider, LocaleAware
         $content = $this->getAdapter()->get($query)->getBody();
 
         if (!$data = json_decode($content, true)) {
-            throw new NoResultException(sprintf('Could not execute query: %s', $query));
+            throw new NoResult(sprintf('Could not execute query: %s', $query));
         }
 
         if (!isset($data['Response']) && 'InvalidCredentials' === $data['subtype']) {
-            throw new InvalidCredentialsException(sprintf('Invalid credentials: %s', $data['details']));
+            throw new InvalidCredentials(sprintf('Invalid credentials: %s', $data['details']));
         } elseif (!isset($data['Response'])) {
-            throw new NoResultException(
+            throw new NoResult(
                 sprintf('Error type `%s` returned from api `%s`', $data['subtype'], $data['Details'])
             );
         }
 
         if (empty($data['Response']['View'])) {
-            throw new NoResultException(sprintf('Could not find results for given query: %s', $query));
+            throw new NoResult(sprintf('Could not find results for given query: %s', $query));
         }
 
         $locations = $data['Response']['View'][0]['Result'];

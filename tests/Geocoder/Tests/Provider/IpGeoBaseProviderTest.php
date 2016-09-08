@@ -60,10 +60,11 @@ class IpGeoBaseProviderTest extends TestCase
         $this->assertArrayNotHasKey('longitude', $result);
         $this->assertArrayNotHasKey('zipcode', $result);
         $this->assertArrayNotHasKey('timezone', $result);
+        $this->assertArrayNotHasKey('city', $result);
+        $this->assertArrayNotHasKey('region', $result);
+        $this->assertArrayNotHasKey('county', $result);
 
-        $this->assertEquals('localhost', $result['city']);
-        $this->assertEquals('localhost', $result['region']);
-        $this->assertEquals('localhost', $result['county']);
+        $this->assertEquals('localhost', $result['locality']);
         $this->assertEquals('localhost', $result['country']);
     }
 

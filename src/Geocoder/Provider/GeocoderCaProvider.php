@@ -10,10 +10,10 @@
 
 namespace Geocoder\Provider;
 
-use Geocoder\Exception\UnsupportedOperation;
 use Geocoder\Exception\NoResult;
 use Geocoder\Exception\QuotaExceeded;
 use Geocoder\Exception\InvalidCredentials;
+use Geocoder\Exception\UnsupportedOperation;
 use Ivory\HttpAdapter\HttpAdapterInterface;
 
 /**
@@ -73,7 +73,7 @@ class GeocoderCaProvider extends AbstractHttpProvider implements Provider
         } catch (QuotaExceeded $e) {
             throw $e;
         } catch (NoResult $e) {
-            throw new NoResult(sprintf('Could not execute query %s', $query));
+            throw new NoResult(sprintf('Could not execute query %s', $query), 0, $e);
         }
 
         return array(array_merge($this->getDefaults(), array(
@@ -96,7 +96,7 @@ class GeocoderCaProvider extends AbstractHttpProvider implements Provider
         } catch (QuotaExceeded $e) {
             throw $e;
         } catch (NoResult $e) {
-            throw new NoResult(sprintf('Could not resolve coordinates %s, %s', $latitude, $longitude));
+            throw new NoResult(sprintf('Could not resolve coordinates %s, %s', $latitude, $longitude), 0, $e);
         }
 
         return array(array_merge($this->getDefaults(), array(
@@ -107,6 +107,8 @@ class GeocoderCaProvider extends AbstractHttpProvider implements Provider
             'city'         => $this->getNodeValue($content->getElementsByTagName('city')),
             'zipcode'      => $this->getNodeValue($content->getElementsByTagName('postal')),
             'cityDistrict' => $this->getNodeValue($content->getElementsByTagName('prov')),
+            'region'       => null,
+            'regionCode'   => null,
         )));
     }
 
