@@ -10,14 +10,15 @@
 
 namespace Geocoder\Provider;
 
-use Geocoder\Exception\NoResultException;
-use Geocoder\Exception\UnsupportedException;
-use Geocoder\HttpAdapter\HttpAdapterInterface;
+use Geocoder\Exception\NoResult;
+use Geocoder\Exception\UnsupportedOperation;
+use Ivory\HttpAdapter\HttpAdapterInterface;
+
 
 /**
  * @author Tudor Matei <tudor@tudormatei.com>
  */
-class TelizeProvider extends AbstractProvider implements ProviderInterface
+class TelizeProvider extends AbstractHttpProvider implements Provider
 {
     /**
      * @var string
@@ -36,10 +37,10 @@ class TelizeProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function getGeocodedData($address)
+    public function geocode($address)
     {
         if (!filter_var($address, FILTER_VALIDATE_IP)) {
-            throw new UnsupportedException('The TelizeProvider does not support street addresses.');
+            throw new UnsupportedOperation('The TelizeProvider does not support street addresses.');
         }
 
         if (in_array($address, array('127.0.0.1', '::1'))) {
@@ -54,33 +55,33 @@ class TelizeProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function getReversedData(array $coordinates)
+    public function reverse($latitude, $longitude)
     {
-        throw new UnsupportedException('The TelizeProvider is not able to do reverse geocoding.');
+        throw new UnsupportedOperation('The TelizeProvider is not able to do reverse geocoding.');
     }
 
     /**
      * @param string $query
      *
-     * @throws \Geocoder\Exception\NoResultException
+     * @throws \Geocoder\Exception\NoResult
      * @return array
      */
     protected function executeQuery($query)
     {
-        $content = $this->getAdapter()->getContent($query);
+        $content = $this->getAdapter()->get($query)->getBody();
 
         if (null === $content || '' === $content) {
-            throw new NoResultException(sprintf('Could not execute query %s', $query));
+            throw new NoResult(sprintf('Could not execute query %s', $query));
         }
 
         $data = json_decode($content, true);
 
         if (isset($data['code']) && $data['code'] == 401) {
-            throw new NoResultException('Input string is not a valid IP address.');
+            throw new NoResult('Input string is not a valid IP address.');
         }
 
         if (!isset($data['ip'])) {
-            throw new NoResultException('Invalid result returned by provider.');
+            throw new NoResult('Invalid result returned by provider.');
         }
 
         return array(array_merge($this->getDefaults(), array(

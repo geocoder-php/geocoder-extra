@@ -17,29 +17,29 @@ class GeocoderUsProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://geocoder.us/service/rest/?address=1600+Pennsylvania+Ave%2C+Washington%2C+DC
      */
     public function testGetGeocodedDataWithAddress()
     {
         $provider = new GeocoderUsProvider($this->getMockAdapter());
-        $provider->getGeocodedData('1600 Pennsylvania Ave, Washington, DC');
+        $provider->geocode('1600 Pennsylvania Ave, Washington, DC');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://geocoder.us/service/rest/?address=foobar
      */
     public function testGetGeocodedDataWithWrongAddress()
     {
         $provider = new GeocoderUsProvider($this->getAdapter());
-        $provider->getGeocodedData('foobar');
+        $provider->geocode('foobar');
     }
 
     public function testGetGeocodedDataWithRealAddress()
     {
         $provider = new GeocoderUsProvider($this->getAdapter());
-        $result   = $provider->getGeocodedData('1600 Pennsylvania Ave, Washington, DC');
+        $result   = $provider->geocode('1600 Pennsylvania Ave, Washington, DC');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -62,52 +62,52 @@ class GeocoderUsProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The GeocoderUsProvider does not support IP addresses.
      */
     public function testGetGeocodedDataWithLocalhostIPv4()
     {
         $provider = new GeocoderUsProvider($this->getMockAdapter($this->never()));
-        $provider->getGeocodedData('127.0.0.1');
+        $provider->geocode('127.0.0.1');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The GeocoderUsProvider does not support IP addresses.
      */
     public function testGetGeocodedDataWithLocalhostIPv6()
     {
         $provider = new GeocoderUsProvider($this->getMockAdapter($this->never()));
-        $provider->getGeocodedData('::1');
+        $provider->geocode('::1');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The GeocoderUsProvider does not support IP addresses.
      */
     public function testGetGeocodedDataWithIPv4()
     {
         $provider = new GeocoderUsProvider($this->getAdapter());
-        $provider->getGeocodedData('74.200.247.59');
+        $provider->geocode('74.200.247.59');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The GeocoderUsProvider does not support IP addresses.
      */
     public function testGetGeocodedDataWithIPv6()
     {
         $provider = new GeocoderUsProvider($this->getAdapter());
-        $provider->getGeocodedData('::ffff:74.200.247.59');
+        $provider->geocode('::ffff:74.200.247.59');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The GeocoderUsProvider is not able to do reverse geocoding.
      */
     public function testGetReverseData()
     {
         $provider = new GeocoderUsProvider($this->getMockAdapter($this->never()));
-        $provider->getReversedData(array(1, 2));
+        $provider->reverse(1, 2);
     }
 }

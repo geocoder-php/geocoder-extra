@@ -10,15 +10,16 @@
 
 namespace Geocoder\Provider;
 
-use Geocoder\Exception\InvalidCredentialsException;
-use Geocoder\HttpAdapter\HttpAdapterInterface;
-use Geocoder\Exception\NoResultException;
-use Geocoder\Exception\UnsupportedException;
+use Geocoder\Exception\InvalidCredentials;
+
+use Geocoder\Exception\NoResult;
+use Geocoder\Exception\UnsupportedOperation;
+use Ivory\HttpAdapter\HttpAdapterInterface;
 
 /**
  * @author Josh Moody <jgmoody@gmail.com>
  */
-class GeocodioProvider extends AbstractProvider implements ProviderInterface
+class GeocodioProvider extends AbstractHttpProvider implements Provider
 {
     /**
      * @var string
@@ -58,15 +59,15 @@ class GeocodioProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function getGeocodedData($address)
+    public function geocode($address)
     {
         // This API doesn't handle IPs
         if (filter_var($address, FILTER_VALIDATE_IP)) {
-            throw new UnsupportedException('The GeocodioProvider does not support IP addresses.');
+            throw new UnsupportedOperation('The GeocodioProvider does not support IP addresses.');
         }
 
         if (null === $this->apiKey) {
-            throw new InvalidCredentialsException('No API Key provided.');
+            throw new InvalidCredentials('No API Key provided.');
         }
 
         $query = sprintf(self::GEOCODE_ENDPOINT_URL, urlencode($address), $this->apiKey);
@@ -77,10 +78,10 @@ class GeocodioProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function getReversedData(array $coordinates)
+    public function reverse($latitude, $longitude)
     {
         if (null === $this->apiKey) {
-            throw new InvalidCredentialsException('No API Key provided.');
+            throw new InvalidCredentials('No API Key provided.');
         }
 
         $query = sprintf(self::REVERSE_ENDPOINT_URL, $coordinates[0], $coordinates[1], $this->apiKey);
@@ -95,22 +96,22 @@ class GeocodioProvider extends AbstractProvider implements ProviderInterface
      */
     protected function executeQuery($query)
     {
-        $content = $this->getAdapter()->getContent($query);
+        $content = $this->getAdapter()->get($query)->getBody();
 
         if (null === $content) {
-            throw new NoResultException(sprintf('Could not execute query: %s', $query));
+            throw new NoResult(sprintf('Could not execute query: %s', $query));
         }
 
         $json = json_decode($content, true);
 
         if (!empty($json['error']) && strtolower($json['error']) == 'invalid api key') {
-            throw new InvalidCredentialsException('Invalid API Key');
+            throw new InvalidCredentials('Invalid API Key');
         } elseif (!empty($json['error'])) {
-            throw new NoResultException(sprintf('Error returned from api: %s', $json['error']));
+            throw new NoResult(sprintf('Error returned from api: %s', $json['error']));
         }
 
         if (empty($json['results'])) {
-            throw new NoResultException(sprintf('Could not find results for given query: %s', $query));
+            throw new NoResult(sprintf('Could not find results for given query: %s', $query));
         }
 
         $locations = $json['results'];
