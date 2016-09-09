@@ -10,16 +10,16 @@
 
 namespace Geocoder\Provider;
 
-use Geocoder\Exception\UnsupportedException;
-use Geocoder\Exception\NoResultException;
-use Geocoder\Exception\QuotaExceededException;
-use Geocoder\Exception\InvalidCredentialsException;
-use Geocoder\HttpAdapter\HttpAdapterInterface;
+use Geocoder\Exception\NoResult;
+use Geocoder\Exception\QuotaExceeded;
+use Geocoder\Exception\InvalidCredentials;
+use Geocoder\Exception\UnsupportedOperation;
+use Ivory\HttpAdapter\HttpAdapterInterface;
 
 /**
  * @author Antoine Corcy <contact@sbin.dk>
  */
-class GeocoderCaProvider extends AbstractProvider implements ProviderInterface
+class GeocoderCaProvider extends AbstractHttpProvider implements Provider
 {
     /**
      * @var string
@@ -57,23 +57,23 @@ class GeocoderCaProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function getGeocodedData($address)
+    public function geocode($address)
     {
         // This API doesn't handle IPs
         if (filter_var($address, FILTER_VALIDATE_IP)) {
-            throw new UnsupportedException('The GeocoderCaProvider does not support IP addresses.');
+            throw new UnsupportedOperation('The GeocoderCaProvider does not support IP addresses.');
         }
 
         $query = sprintf(self::GEOCODE_ENDPOINT_URL, $this->scheme, urlencode($address), $this->apiKey);
 
         try {
             $content = $this->handleQuery($query);
-        } catch (InvalidCredentialsException $e) {
+        } catch (InvalidCredentials $e) {
             throw $e;
-        } catch (QuotaExceededException $e) {
+        } catch (QuotaExceeded $e) {
             throw $e;
-        } catch (NoResultException $e) {
-            throw new NoResultException(sprintf('Could not execute query %s', $query));
+        } catch (NoResult $e) {
+            throw new NoResult(sprintf('Could not execute query %s', $query), 0, $e);
         }
 
         return array(array_merge($this->getDefaults(), array(
@@ -85,18 +85,18 @@ class GeocoderCaProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function getReversedData(array $coordinates)
+    public function reverse($latitude, $longitude)
     {
-        $query = sprintf(self::REVERSE_ENDPOINT_URL, $this->scheme, $coordinates[0], $coordinates[1], $this->apiKey);
+        $query = sprintf(self::REVERSE_ENDPOINT_URL, $this->scheme, $latitude, $longitude, $this->apiKey);
 
         try {
             $content = $this->handleQuery($query);
-        } catch (InvalidCredentialsException $e) {
+        } catch (InvalidCredentials $e) {
             throw $e;
-        } catch (QuotaExceededException $e) {
+        } catch (QuotaExceeded $e) {
             throw $e;
-        } catch (NoResultException $e) {
-            throw new NoResultException(sprintf('Could not resolve coordinates %s', implode(', ', $coordinates)));
+        } catch (NoResult $e) {
+            throw new NoResult(sprintf('Could not resolve coordinates %s, %s', $latitude, $longitude), 0, $e);
         }
 
         return array(array_merge($this->getDefaults(), array(
@@ -107,6 +107,8 @@ class GeocoderCaProvider extends AbstractProvider implements ProviderInterface
             'city'         => $this->getNodeValue($content->getElementsByTagName('city')),
             'zipcode'      => $this->getNodeValue($content->getElementsByTagName('postal')),
             'cityDistrict' => $this->getNodeValue($content->getElementsByTagName('prov')),
+            'region'       => null,
+            'regionCode'   => null,
         )));
     }
 
@@ -129,26 +131,26 @@ class GeocoderCaProvider extends AbstractProvider implements ProviderInterface
     }
 
     /**
-     * @param  string                      $query
-     * @throws InvalidCredentialsException
-     * @throws QuotaExceededException
-     * @throws NoResultException
+     * @param  string             $query
+     * @throws InvalidCredentials
+     * @throws QuotaExceeded
+     * @throws NoResult
      * @return \DOMDocument
      */
     private function handleQuery($query)
     {
-        $content = $this->getAdapter()->getContent($query);
+        $content = $this->getAdapter()->get($query)->getBody();
 
         $doc = new \DOMDocument;
         if (!@$doc->loadXML($content) || $doc->getElementsByTagName('error')->length) {
             switch ($this->getNodeValue($doc->getElementsByTagName('code'))) {
                 case '001':
                 case '003':
-                    throw new InvalidCredentialsException(sprintf('Invalid authentification token %s', $query));
+                    throw new InvalidCredentials(sprintf('Invalid authentification token %s', $query));
                 case '002':
-                    throw new QuotaExceededException(sprintf('Account ran out of credits %s', $query));
+                    throw new QuotaExceeded(sprintf('Account ran out of credits %s', $query));
                 default:
-                    throw new NoResultException;
+                    throw new NoResult;
             }
         }
 

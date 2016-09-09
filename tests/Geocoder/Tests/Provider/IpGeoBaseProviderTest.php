@@ -17,39 +17,39 @@ class IpGeoBaseProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The IpGeoBaseProvider does not support Street addresses.
      */
     public function testGetGeocodedDataWithNull()
     {
         $provider = new IpGeoBaseProvider($this->getMockAdapter($this->never()));
-        $provider->getGeocodedData(null);
+        $provider->geocode(null);
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The IpGeoBaseProvider does not support Street addresses.
      */
     public function testGetGeocodedDataWithEmpty()
     {
         $provider = new IpGeoBaseProvider($this->getMockAdapter($this->never()));
-        $provider->getGeocodedData('');
+        $provider->geocode('');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The IpGeoBaseProvider does not support Street addresses.
      */
     public function testGetGeocodedDataWithAddress()
     {
         $provider = new IpGeoBaseProvider($this->getMockAdapter($this->never()));
-        $provider->getGeocodedData('10 avenue Gambetta, Paris, France');
+        $provider->geocode('10 avenue Gambetta, Paris, France');
     }
 
     public function testGetGeocodedDataWithLocalhostIPv4()
     {
         $provider = new IpGeoBaseProvider($this->getMockAdapter($this->never()));
-        $result   = $provider->getGeocodedData('127.0.0.1');
+        $result   = $provider->geocode('127.0.0.1');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -60,47 +60,48 @@ class IpGeoBaseProviderTest extends TestCase
         $this->assertArrayNotHasKey('longitude', $result);
         $this->assertArrayNotHasKey('zipcode', $result);
         $this->assertArrayNotHasKey('timezone', $result);
+        $this->assertArrayNotHasKey('city', $result);
+        $this->assertArrayNotHasKey('region', $result);
+        $this->assertArrayNotHasKey('county', $result);
 
-        $this->assertEquals('localhost', $result['city']);
-        $this->assertEquals('localhost', $result['region']);
-        $this->assertEquals('localhost', $result['county']);
+        $this->assertEquals('localhost', $result['locality']);
         $this->assertEquals('localhost', $result['country']);
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The IpGeoBaseProvider does not support IPv6 addresses.
      */
     public function testGetGeocodedDataWithLocalhostIPv6()
     {
         $provider = new IpGeoBaseProvider($this->getMockAdapter($this->never()));
-        $result = $provider->getGeocodedData('::1');
+        $result = $provider->geocode('::1');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://ipgeobase.ru:7020/geo?ip=88.188.221.14
      */
     public function testGetGeocodedDataWithRealIPv4GetsNullContent()
     {
         $provider = new IpGeoBaseProvider($this->getMockAdapterReturns(null));
-        $provider->getGeocodedData('88.188.221.14');
+        $provider->geocode('88.188.221.14');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://ipgeobase.ru:7020/geo?ip=88.188.221.14
      */
     public function testGetGeocodedDataWithRealIPv4GetsEmptyContent()
     {
         $provider = new IpGeoBaseProvider($this->getMockAdapterReturns(''));
-        $provider->getGeocodedData('88.188.221.14');
+        $provider->geocode('88.188.221.14');
     }
 
     public function testGetGeocodedDataWithRealIPv4Moscow()
     {
         $provider = new IpGeoBaseProvider($this->getAdapter());
-        $result   = $provider->getGeocodedData('144.206.192.6');
+        $result   = $provider->geocode('144.206.192.6');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -123,7 +124,7 @@ class IpGeoBaseProviderTest extends TestCase
     public function testGetGeocodedDataWithRealIPv4Kiev()
     {
         $provider = new IpGeoBaseProvider($this->getAdapter());
-        $result   = $provider->getGeocodedData('2.56.176.1');
+        $result   = $provider->geocode('2.56.176.1');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -144,22 +145,22 @@ class IpGeoBaseProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The IpGeoBaseProvider does not support IPv6 addresses.
      */
     public function testGetGeocodedDataWithRealIPv6()
     {
         $provider = new IpGeoBaseProvider($this->getAdapter());
-        $provider->getGeocodedData('::ffff:88.188.221.14');
+        $provider->geocode('::ffff:88.188.221.14');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The IpGeoBaseProvider is not able to do reverse geocoding.
      */
     public function testGetReverseData()
     {
         $provider = new IpGeoBaseProvider($this->getMockAdapter($this->never()));
-        $provider->getReversedData(array(1, 2));
+        $provider->reverse(1, 2);
     }
 }

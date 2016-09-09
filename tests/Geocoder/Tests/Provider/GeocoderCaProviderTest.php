@@ -17,46 +17,46 @@ class GeocoderCaProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://geocoder.ca/?geoit=xml&locate=1600+Pennsylvania+Ave%2C+Washington%2C+DC
      */
-    public function testGetGeocodedDataWithAddress()
+    public function testgeocodeWithAddress()
     {
         $provider = new GeocoderCaProvider($this->getMockAdapter());
-        $provider->getGeocodedData('1600 Pennsylvania Ave, Washington, DC');
+        $provider->geocode('1600 Pennsylvania Ave, Washington, DC');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not execute query http://geocoder.ca/?geoit=xml&locate=foobar
      */
-    public function testGetGeocodedDataWithWrongAddress()
+    public function testgeocodeWithWrongAddress()
     {
         $provider = new GeocoderCaProvider($this->getAdapter());
-        $provider->getGeocodedData('foobar');
+        $provider->geocode('foobar');
     }
 
-    public function testGetGeocodedDataUsingSSL()
+    public function testgeocodeUsingSSL()
     {
         $provider = new GeocoderCaProvider($this->getAdapter(), true);
-        $provider->getGeocodedData('1600 Pennsylvania Ave, Washington, DC');
+        $provider->geocode('1600 Pennsylvania Ave, Washington, DC');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\InvalidCredentialsException
+     * @expectedException \Geocoder\Exception\InvalidCredentials
      * @expectedExceptionMessage Invalid authentification token https://geocoder.ca/?geoit=xml&locate=foobar&auth=bad-api-key
      */
-    public function testGetGeocodedDataWithWrongInvalidApiKey()
+    public function testgeocodeWithWrongInvalidApiKey()
     {
         $provider = new GeocoderCaProvider($this->getAdapter(), true, 'bad-api-key');
-        $provider->getGeocodedData('foobar');
+        $provider->geocode('foobar');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\QuotaExceededException
+     * @expectedException \Geocoder\Exception\QuotaExceeded
      * @expectedExceptionMessage Account ran out of credits https://geocoder.ca/?geoit=xml&locate=foobar&auth=api-key
      */
-    public function testGetGeocodedDataRanOutCredits()
+    public function testgeocodeRanOutCredits()
     {
         $xml = <<<XML
 <geodata>
@@ -67,127 +67,117 @@ class GeocoderCaProviderTest extends TestCase
 </geodata>
 XML;
         $provider = new GeocoderCaProvider($this->getMockAdapterReturns($xml), true, 'api-key');
-        $provider->getGeocodedData('foobar');
+        $provider->geocode('foobar');
     }
 
-    public function testGetGeocodedDataWithRealAddressUS()
+    public function testgeocodeWithRealAddressUS()
     {
         $provider = new GeocoderCaProvider($this->getAdapter());
-        $result   = $provider->getGeocodedData('1600 Pennsylvania Ave, Washington, DC');
+        $result   = $provider->geocode('1600 Pennsylvania Ave, Washington, DC');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
 
         $result = $result[0];
         $this->assertInternalType('array', $result);
-        $this->assertEquals(38.898748, $result['latitude'], '', 0.0001);
-        $this->assertEquals(-77.037684, $result['longitude'], '', 0.0001);
-        $this->assertNull($result['bounds']);
+        $this->assertEquals(38.87458, $result['latitude'], '', 0.01);
+        $this->assertEquals(-76.97291, $result['longitude'], '', 0.01);
+        $this->assertSame(array('south' => null, 'west' => null, 'north' => null, 'east' => null), $result['bounds']);
         $this->assertNull($result['streetNumber']);
         $this->assertNull($result['streetName']);
-        $this->assertNull($result['zipcode']);
-        $this->assertNull($result['city']);
-        $this->assertNull($result['cityDistrict']);
-        $this->assertNull($result['region']);
-        $this->assertNull($result['regionCode']);
         $this->assertNull($result['country']);
         $this->assertNull($result['countryCode']);
         $this->assertNull($result['timezone']);
     }
 
-    public function testGetGeocodedDataWithRealAddressCA()
+    public function testgeocodeWithRealAddressCA()
     {
         $provider = new GeocoderCaProvider($this->getAdapter());
-        $result   = $provider->getGeocodedData('4208 Gallaghers, Kelowna, BC');
+        $result   = $provider->geocode('4208 Gallaghers, Kelowna, BC');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
 
         $result = $result[0];
         $this->assertInternalType('array', $result);
-        $this->assertEquals(49.831515, $result['latitude'], '', 0.0001);
-        $this->assertEquals(-119.381857, $result['longitude'], '', 0.0001);
-        $this->assertNull($result['bounds']);
+        $this->assertEquals(49.831515, $result['latitude'], '', 0.01);
+        $this->assertEquals(-119.381857, $result['longitude'], '', 0.01);
+        $this->assertSame(array('south' => null, 'west' => null, 'north' => null, 'east' => null), $result['bounds']);
         $this->assertNull($result['streetNumber']);
         $this->assertNull($result['streetName']);
-        $this->assertNull($result['zipcode']);
-        $this->assertNull($result['city']);
-        $this->assertNull($result['cityDistrict']);
-        $this->assertNull($result['region']);
-        $this->assertNull($result['regionCode']);
         $this->assertNull($result['country']);
         $this->assertNull($result['countryCode']);
         $this->assertNull($result['timezone']);
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The GeocoderCaProvider does not support IP addresses.
      */
-    public function testGetGeocodedDataWithLocalhostIPv4()
+    public function testgeocodeWithLocalhostIPv4()
     {
         $provider = new GeocoderCaProvider($this->getMockAdapter($this->never()));
-        $provider->getGeocodedData('127.0.0.1');
+        $provider->geocode('127.0.0.1');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The GeocoderCaProvider does not support IP addresses.
      */
-    public function testGetGeocodedDataWithLocalhostIPv6()
+    public function testgeocodeWithLocalhostIPv6()
     {
         $provider = new GeocoderCaProvider($this->getMockAdapter($this->never()));
-        $provider->getGeocodedData('::1');
+        $provider->geocode('::1');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The GeocoderCaProvider does not support IP addresses.
      */
-    public function testGetGeocodedDataWithIPv4()
+    public function testgeocodeWithIPv4()
     {
         $provider = new GeocoderCaProvider($this->getAdapter());
-        $provider->getGeocodedData('74.200.247.59');
+        $provider->geocode('74.200.247.59');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\UnsupportedException
+     * @expectedException \Geocoder\Exception\UnsupportedOperation
      * @expectedExceptionMessage The GeocoderCaProvider does not support IP addresses.
      */
-    public function testGetGeocodedDataWithIPv6()
+    public function testgeocodeWithIPv6()
     {
         $provider = new GeocoderCaProvider($this->getAdapter());
-        $provider->getGeocodedData('::ffff:74.200.247.59');
+        $provider->geocode('::ffff:74.200.247.59');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\NoResultException
+     * @expectedException \Geocoder\Exception\NoResult
      * @expectedExceptionMessage Could not resolve coordinates 1, 2
      */
     public function testGetReverseDataWithWrongCoordinate()
     {
         $provider = new GeocoderCaProvider($this->getAdapter());
-        $provider->getReversedData(array(1, 2));
+        $provider->reverse(1, 2);
     }
 
     public function testGetReversedDataUsingSSL()
     {
         $provider = new GeocoderCaProvider($this->getAdapter(), true);
-        $provider->getReversedData(array('40.707507', '-74.011255'));
+        $provider->reverse('40.707507', '-74.011255');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\InvalidCredentialsException
+     * @expectedException \Geocoder\Exception\InvalidCredentials
      * @expectedExceptionMessage Invalid authentification token https://geocoder.ca/?geoit=xml&reverse=1&latt=40.707507&longt=-74.011255&auth=bad-api-key
      */
     public function testGetReversedDataWithWrongInvalidApiKey()
     {
         $provider = new GeocoderCaProvider($this->getAdapter(), true, 'bad-api-key');
-        $provider->getReversedData(array('40.707507', '-74.011255'));
+        $provider->reverse('40.707507', '-74.011255');
     }
 
     /**
-     * @expectedException \Geocoder\Exception\QuotaExceededException
+     * @expectedException \Geocoder\Exception\QuotaExceeded
      * @expectedExceptionMessage Account ran out of credits https://geocoder.ca/?geoit=xml&reverse=1&latt=40.707507&longt=-74.011255&auth=api-key
      */
     public function testGetReversedDataRanOutCredits()
@@ -201,13 +191,13 @@ XML;
 </geodata>
 XML;
         $provider = new GeocoderCaProvider($this->getMockAdapterReturns($xml), true, 'api-key');
-        $provider->getReversedData(array('40.707507', '-74.011255'));
+        $provider->reverse('40.707507', '-74.011255');
     }
 
     public function testGetReversedDataWithRealCoordinates()
     {
         $provider = new GeocoderCaProvider($this->getAdapter());
-        $result   = $provider->getReversedData(array('40.707507', '-74.011255'));
+        $result   = $provider->reverse('40.707507', '-74.011255');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
@@ -216,13 +206,11 @@ XML;
         $this->assertInternalType('array', $result);
         $this->assertEquals(40.707507, $result['latitude'], '', 0.0001);
         $this->assertEquals(-74.011255, $result['longitude'], '', 0.0001);
-        $this->assertEquals(2, $result['streetNumber']);
-        $this->assertEquals('New St', $result['streetName']);
+        $this->assertEquals('2', $result['streetNumber']);
+        $this->assertEquals('New ST', $result['streetName']);
         $this->assertEquals(10005, $result['zipcode']);
-        $this->assertEquals('New York', $result['city']);
+        $this->assertEquals('NEW YORK', $result['city']);
         $this->assertEquals('NY', $result['cityDistrict']);
-        $this->assertNull($result['region']);
-        $this->assertNull($result['regionCode']);
         $this->assertNull($result['country']);
         $this->assertNull($result['countryCode']);
         $this->assertNull($result['timezone']);
