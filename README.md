@@ -45,7 +45,6 @@ Please, read the [Geocoder's documentation](http://geocoder-php.org/Geocoder/).
 | [IpInfo](http://ipinfo.io/developers) | no | yes | yes | no | no | |
 | [Here](http://developer.here.com/rest-apis/documentation/geocoder/topics/overview.html) | yes | no | no | yes | no | |
 | [IpGeoBase](http://ipgeobase.ru/) | no | yes | no | yes | no | Russia | |
-| [Telize](http://www.telize.com) | no | yes | yes | no | no | | |
 | [Baidu](http://developer.baidu.com/map/geocoding-api.htm) | yes | no | no | yes | no | China | API key required |
 | [DataScienceToolkit](http://www.datasciencetoolkit.org/) | yes | yes | no | no | no | USA, Canada | |
 | [GeoCoder.ca](http://geocoder.ca/) | yes | no | no | yes | yes | USA, Canada | Optional API key can be provided. $1 CAD for 400 lookups |
