@@ -80,8 +80,8 @@ XML;
 
         $result = $result[0];
         $this->assertInternalType('array', $result);
-        $this->assertEquals(38.87458, $result['latitude'], '', 0.01);
-        $this->assertEquals(-76.97291, $result['longitude'], '', 0.01);
+        $this->assertEquals(38.898761, $result['latitude'], '', 0.01);
+        $this->assertEquals(-77.035117, $result['longitude'], '', 0.01);
         $this->assertSame(array('south' => null, 'west' => null, 'north' => null, 'east' => null), $result['bounds']);
         $this->assertNull($result['streetNumber']);
         $this->assertNull($result['streetName']);
