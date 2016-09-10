@@ -27,7 +27,7 @@ class GeocodioProviderTest extends TestCase
 
     /**
      * @expectedException \Geocoder\Exception\NoResult
-     * @expectedExceptionMessage Could not execute query: http://api.geocod.io/v1/geocode?q=1+Infinite+Loop+Cupertino%2C+CA+95014&api_key=9999
+     * @expectedExceptionMessage Could not find results for given query: http://api.geocod.io/v1/geocode?q=1+Infinite+Loop+Cupertino%2C+CA+95014&api_key=9999
      */
     public function testGetGeocodedDataWithAddressGetsNullContent()
     {

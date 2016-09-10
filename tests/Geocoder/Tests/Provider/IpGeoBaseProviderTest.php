@@ -124,7 +124,7 @@ class IpGeoBaseProviderTest extends TestCase
     public function testGetGeocodedDataWithRealIPv4Kiev()
     {
         $provider = new IpGeoBaseProvider($this->getAdapter());
-        $result   = $provider->geocode('2.56.176.1');
+        $result   = $provider->geocode('46.118.0.12');
 
         $this->assertInternalType('array', $result);
         $this->assertCount(1, $result);
