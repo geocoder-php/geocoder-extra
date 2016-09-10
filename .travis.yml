@@ -12,11 +12,4 @@ before_script:
     - composer install --prefer-dist --no-interaction
 
 script:
-    - phpunit -c phpunit.xml.dist --coverage-text tests/Geocoder/Tests/Provider/BaiduProviderTest.php
-    - phpunit -c phpunit.xml.dist --coverage-text tests/Geocoder/Tests/Provider/DataScienceToolkitProviderTest.php
-    - phpunit -c phpunit.xml.dist --coverage-text tests/Geocoder/Tests/Provider/HereProviderTest.php
-    - phpunit -c phpunit.xml.dist --coverage-text tests/Geocoder/Tests/Provider/IGNOpenLSProviderTest.php
-    - phpunit -c phpunit.xml.dist --coverage-text tests/Geocoder/Tests/Provider/IpInfoProviderTest.php
-    - phpunit -c phpunit.xml.dist --coverage-text tests/Geocoder/Tests/Provider/OGDViennaAustriaProviderTest.php
-    - phpunit -c phpunit.xml.dist --coverage-text tests/Geocoder/Tests/Provider/OIORestProviderTest.php
-    - phpunit -c phpunit.xml.dist --coverage-text tests/Geocoder/Tests/Provider/Ip2cProviderTest.php
+    - phpunit -c phpunit.xml.dist --coverage-text
