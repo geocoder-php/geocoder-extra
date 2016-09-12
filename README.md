@@ -51,6 +51,7 @@ Please, read the [Geocoder's documentation](http://geocoder-php.org/Geocoder/).
 | [GeoCoder.us](http://geocoder.us/) | yes | no | no | no | no | USA | Free throttled service. $50 USD for 20000 requests for paid service |
 | [OIORest](http://geo.oiorest.dk/) | yes | no | no | yes | no | Denmark | |
 | [IGN OpenLS](http://api.ign.fr/accueil) | yes | no | no | no | no | France | API key required |
+| [ip2c](http://about.ip2c.org/) | no | yes | no | no | no | |
 
 
 Contributing
