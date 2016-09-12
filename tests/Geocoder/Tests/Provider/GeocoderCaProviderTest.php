@@ -203,10 +203,11 @@ XML;
         $this->assertCount(1, $result);
 
         $result = $result[0];
+        error_log(var_export($result, true));
         $this->assertInternalType('array', $result);
         $this->assertEquals(40.707507, $result['latitude'], '', 0.0001);
         $this->assertEquals(-74.011255, $result['longitude'], '', 0.0001);
-        $this->assertEquals('2', $result['streetNumber']);
+        $this->assertEquals('1', $result['streetNumber']);
         $this->assertEquals('New ST', $result['streetName']);
         $this->assertEquals(10005, $result['zipcode']);
         $this->assertEquals('NEW YORK', $result['city']);
