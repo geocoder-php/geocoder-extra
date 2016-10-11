@@ -56,7 +56,7 @@ class What3wordsProvider extends AbstractHttpProvider implements Provider
     {
         $content = $this->getAdapter()->get($query)->getBody();
 
-        if (!$data = json_decode($content, true)) {
+        if (null === $data = json_decode($content, true)) {
             throw new NoResultException(sprintf('Could not execute query: %s', $query));
         }
 
