@@ -14,21 +14,11 @@ contains **providers**.
 Installation
 ------------
 
-The recommended way to install this package is through
-[Composer](http://getcomposer.org/):
+Use [Composer](http://getcomposer.org/) to install the package:
 
-``` json
-{
-    "require": {
-        "geocoder-php/geocoder-extra": "@stable"
-    }
-}
 ```
-
-**Protip:** you should browse the
-[`geocoder-php/geocoder-extra`](https://packagist.org/packages/geocoder-php/geocoder-extra)
-page to choose a stable version to use, avoid the `@stable` meta constraint.
-
+composer require geocoder-php/geocoder-extra
+```
 
 Usage
 -----
