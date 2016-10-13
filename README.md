@@ -39,7 +39,7 @@ Please, read the [Geocoder's documentation](http://geocoder-php.org/Geocoder/).
 
 | Provider       | Address? | IPv4? | IPv6? | Reverse?  | SSL Support?      | Coverage  | Terms |
 |:-------------- |----------|-------|-------|-----------|-------------------|:--------- |:----- |
-| [OGD Vienna](https://open.wien.at/site/datensatz/?id=c223b93a-2634-4f06-ac73-8709b9e16888) | yes | no | no | no | no | Vienna / Austria | |
+| [OGD Vienna](https://open.wien.at/site/datensatz/?id=c223b93a-2634-4f06-ac73-8709b9e16888) | yes | no | no | yes | yes | Vienna / Austria | |
 | [Naver](http://developer.naver.com/wiki/pages/SrchAPI) | yes | no | no | no | no | South Korea | |
 | [Geocodio](http://geocod.io/) | yes | no | no | yes | no | USA | |
 | [IpInfo](http://ipinfo.io/developers) | no | yes | yes | no | no | |
