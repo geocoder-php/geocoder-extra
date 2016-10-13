@@ -18,7 +18,7 @@ class GeocoderUsProviderTest extends TestCase
 
     /**
      * @expectedException \Geocoder\Exception\NoResult
-     * @expectedExceptionMessage Could not find results for given query: http://geocoding.geo.census.gov/geocoder/locations/onelineaddress?format=json&benchmark=Public_AR_Current&address=1600+Pennsylvania+Ave%2C+Washington%2C+DC
+     * @expectedExceptionMessage Could not find results for given query: https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?format=json&benchmark=Public_AR_Current&address=1600+Pennsylvania+Ave%2C+Washington%2C+DC
      */
     public function testgeocodeWithAddress()
     {
@@ -28,7 +28,7 @@ class GeocoderUsProviderTest extends TestCase
 
     /**
      * @expectedException \Geocoder\Exception\NoResult
-     * @expectedExceptionMessage Could not find results for given query: http://geocoding.geo.census.gov/geocoder/locations/onelineaddress?format=json&benchmark=Public_AR_Current&address=foobar
+     * @expectedExceptionMessage Could not find results for given query: https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?format=json&benchmark=Public_AR_Current&address=foobar
      */
     public function testgeocodeWithWrongAddress()
     {

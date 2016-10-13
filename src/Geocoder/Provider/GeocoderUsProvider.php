@@ -21,7 +21,7 @@ class GeocoderUsProvider extends AbstractHttpProvider implements Provider
     /**
      * @var string
      */
-    const ENDPOINT_URL = 'http://geocoding.geo.census.gov/geocoder/locations/onelineaddress?format=json&benchmark=Public_AR_Current&address=%s';
+    const ENDPOINT_URL = 'https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?format=json&benchmark=Public_AR_Current&address=%s';
 
     /**
      * {@inheritDoc}
