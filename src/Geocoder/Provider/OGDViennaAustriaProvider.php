@@ -23,8 +23,8 @@ class OGDViennaAustriaProvider extends AbstractHttpProvider implements Provider
     /**
      * @var string
      */
-    const ENDPOINT_URL = 'https://data.wien.gv.at/daten/OGDAddressService.svc/GetAddressInfo?CRS=EPSG:4326&Address=%s';
-    const REVERSE_ENDPOINT_URL = 'https://data.wien.gv.at/daten/OGDAddressService.svc/ReverseGeocode?crs=EPSG:4326&location=%F,%F';
+    const ENDPOINT_URL = 'http://data.wien.gv.at/daten/OGDAddressService.svc/GetAddressInfo?CRS=EPSG:4326&Address=%s';
+    const REVERSE_ENDPOINT_URL = 'http://data.wien.gv.at/daten/OGDAddressService.svc/ReverseGeocode?crs=EPSG:4326&location=%F,%F';
 
     /**
      * {@inheritDoc}
