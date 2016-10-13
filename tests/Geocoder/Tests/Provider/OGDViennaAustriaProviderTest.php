@@ -19,7 +19,7 @@ class OGDViennaAustriaProviderTest extends TestCase
 
     /**
      * @expectedException \Geocoder\Exception\NoResult
-     * @expectedExceptionMessage Could not execute query http://data.wien.gv.at/daten/OGDAddressService.svc/GetAddressInfo?CRS=EPSG:4326&Address=Stephansplatz
+     * @expectedExceptionMessage Could not execute query https://data.wien.gv.at/daten/OGDAddressService.svc/GetAddressInfo?CRS=EPSG:4326&Address=Stephansplatz
      */
     public function testGeocodeWithAddress()
     {
@@ -29,7 +29,7 @@ class OGDViennaAustriaProviderTest extends TestCase
 
     /**
      * @expectedException \Geocoder\Exception\NoResult
-     * @expectedExceptionMessage Could not execute query http://data.wien.gv.at/daten/OGDAddressService.svc/GetAddressInfo?CRS=EPSG:4326&Address=yyyyyyy
+     * @expectedExceptionMessage Could not execute query https://data.wien.gv.at/daten/OGDAddressService.svc/GetAddressInfo?CRS=EPSG:4326&Address=yyyyyyy
      */
     public function testGeocodeWithWrongAddress()
     {
