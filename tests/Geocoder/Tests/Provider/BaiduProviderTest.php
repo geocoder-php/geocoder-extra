@@ -27,7 +27,7 @@ class BaiduProviderTest extends TestCase
 
     /**
      * @expectedException \Geocoder\Exception\NoResult
-     * @expectedExceptionMessage Could not execute query http://api.map.baidu.com/geocoder?output=json&key=api_key&address=
+     * @expectedExceptionMessage Could not execute query http://api.map.baidu.com/geocoder/v2/?output=json&pois=0&ak=api_key&address=
      */
     public function testGeocodeWithNull()
     {
@@ -37,7 +37,7 @@ class BaiduProviderTest extends TestCase
 
     /**
      * @expectedException \Geocoder\Exception\NoResult
-     * @expectedExceptionMessage Could not execute query http://api.map.baidu.com/geocoder?output=json&key=api_key&address=
+     * @expectedExceptionMessage Could not execute query http://api.map.baidu.com/geocoder/v2/?output=json&pois=0&ak=api_key&address=
      */
     public function testGeocodeWithEmpty()
     {
@@ -47,7 +47,7 @@ class BaiduProviderTest extends TestCase
 
     /**
      * @expectedException \Geocoder\Exception\NoResult
-     * @expectedExceptionMessage ould not execute query http://api.map.baidu.com/geocoder?output=json&key=api_key&address=%E7%99%BE%E5%BA%A6%E5%A4%A7%E5%8E%A6
+     * @expectedExceptionMessage ould not execute query http://api.map.baidu.com/geocoder/v2/?output=json&pois=0&ak=api_key&address=%E7%99%BE%E5%BA%A6%E5%A4%A7%E5%8E%A6
      */
     public function testGeocodeWithAddressContentReturnNull()
     {
@@ -57,7 +57,7 @@ class BaiduProviderTest extends TestCase
 
     /**
      * @expectedException \Geocoder\Exception\NoResult
-     * @expectedExceptionMessage ould not execute query http://api.map.baidu.com/geocoder?output=json&key=api_key&address=%E7%99%BE%E5%BA%A6%E5%A4%A7%E5%8E%A6
+     * @expectedExceptionMessage ould not execute query http://api.map.baidu.com/geocoder/v2/?output=json&pois=0&ak=api_key&address=%E7%99%BE%E5%BA%A6%E5%A4%A7%E5%8E%A6
      */
     public function testGeocodeWithAddress()
     {
@@ -117,7 +117,7 @@ class BaiduProviderTest extends TestCase
 
     /**
      * @expectedException Geocoder\Exception\NoResult
-     * @expectedExceptionMessage Could not execute query http://api.map.baidu.com/geocoder?output=json&key=api_key&location=1.000000,2.000000
+     * @expectedExceptionMessage Could not execute query http://api.map.baidu.com/geocoder/v2/?output=json&pois=0&ak=api_key&location=1.000000,2.000000
      */
     public function testReverse()
     {
@@ -137,7 +137,7 @@ class BaiduProviderTest extends TestCase
 
     /**
      * @expectedException \Geocoder\Exception\NoResult
-     * @expectedExceptionMessage Could not execute query http://api.map.baidu.com/geocoder?output=json&key=api_key&location=39.983424,116.322987
+     * @expectedExceptionMessage Could not execute query http://api.map.baidu.com/geocoder/v2/?output=json&pois=0&ak=api_key&location=39.983424,116.322987
      */
     public function testReverseWithCoordinatesContentReturnNull()
     {
